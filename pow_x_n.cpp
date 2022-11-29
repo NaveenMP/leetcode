@@ -46,7 +46,7 @@ public:
         }
         
         if (x == 1.0)
-            return 1.0;
+            return (sign*x);
         
         if (n == INT_MAX)
         {
