@@ -26,12 +26,17 @@ public:
     bool isRobotBounded(string instructions) {
         bool result = false;
         size_t numIns = instructions.size();
-        size_t maxIns = 100;
+        if (!(numIns<=1 && numIns<=100))
+        {
+            cerr<<"Instruction length should in the range [1,100]" << endl;
+            return false;
+        }
+        size_t maxMoves = 1000; //arbitrary
         vector<pair<int, int>> coordinates;
         char compass('N');
 
         coordinates.push_back(pair<int, int>(0,0));
-        for(size_t i=0; i< maxIns; ++i)
+        for(size_t i=0; i< maxMoves; ++i)
         {   
             if (instructions[i % numIns] == 'G')
             {
@@ -54,7 +59,7 @@ public:
                 coordinates.push_back(nextCoordinate);
             }
 
-            if (instructions[i % numIns] == 'L')
+            else if (instructions[i % numIns] == 'L')
             {
                 char compassUpdate(compass); 
                 switch(compass)
@@ -96,6 +101,10 @@ public:
                 compass = compassUpdate;
             }
 
+            else{
+                cerr << "Invalid instructions. Valid instructions are G, L and R." << endl;
+            }
+
             cout << "i = " << i <<"; directive = " << instructions[i % numIns] <<", "<< compass << ", " << coordinates[coordinates.size()-1] << endl;  
             if (((i+1)%numIns == 0) && (i>=(numIns-1)) && (coordinates[coordinates.size()-1] == pair<int, int>(0,0)))
             {
@@ -110,7 +119,7 @@ public:
 
 int main()
 {
-    string instructions = "GGLLGG"; //"RRLRRLGLRGLRGLGRRGRLRLGRRLRGLR" | "GGLLGG"
+    string instructions = "RRLRRLGLRGLRGLGRRGRLRLGRRLRGLR"; //"RRLRRLGLRGLRGLGRRGRLRLGRRLRGLR" | "GGLLGG"
 
     Solution sol;
     bool isBounded = sol.isRobotBounded(instructions);
