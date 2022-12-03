@@ -57,90 +57,68 @@ vector <string> doesCircleExist(vector<string> commands)
 
         coordinates.push_back(pair<int, int>(0,0));
         for(size_t i=0; i< maxDirectives; ++i)
-        {
-            if (i == 0)
-            {   
-                if (commandDirectives[i] == 'G')
-                {
-                    compass = 'N';
-                    coordinates.push_back(pair<int, int>(0,1));
-                }
-                else if(commandDirectives[i] == 'R')
-                {
-                    compass = 'E';
-                    coordinates.push_back(pair<int, int>(0,0));
-                }
-                else if(commandDirectives[i] == 'L')
-                {
-                    compass = 'W';
-                    coordinates.push_back(pair<int, int>(0,0));
-                }
-            }
-            else
+        {   
+            if (commandDirectives[i % nDirectives] == 'G')
             {
-                if (commandDirectives[i % nDirectives] == 'G')
+                pair<int,int> nextCoordinate;
+                switch(compass)
                 {
-                    pair<int,int> nextCoordinate;
-                    switch(compass)
-                    {
-                        case 'N':
-                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(0,1);
-                            break;
-                        case 'E':
-                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(1,0);
-                            break;
-                        case 'W':
-                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(-1,0);
-                            break;
-                        case 'S':
-                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(0,-1);
-                            break;   
-                    }
-                    coordinates.push_back(nextCoordinate);
+                    case 'N':
+                        nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(0,1);
+                        break;
+                    case 'E':
+                        nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(1,0);
+                        break;
+                    case 'W':
+                        nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(-1,0);
+                        break;
+                    case 'S':
+                        nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(0,-1);
+                        break;   
                 }
+                coordinates.push_back(nextCoordinate);
+            }
 
-                if (commandDirectives[i % nDirectives] == 'L')
+            if (commandDirectives[i % nDirectives] == 'L')
+            {
+                char compassUpdate(compass); 
+                switch(compass)
                 {
-                    char compassUpdate(compass); 
-                    switch(compass)
-                    {
-                        case 'N':
-                            compassUpdate = 'W';
-                            break; 
-                        case 'E':
-                            compassUpdate = 'N';
-                            break; 
-                        case 'W':
-                            compassUpdate = 'S';
-                            break; 
-                        case 'S':
-                            compassUpdate = 'E';
-                            break;                         
-                    }
-                    compass = compassUpdate;
+                    case 'N':
+                        compassUpdate = 'W';
+                        break; 
+                    case 'E':
+                        compassUpdate = 'N';
+                        break; 
+                    case 'W':
+                        compassUpdate = 'S';
+                        break; 
+                    case 'S':
+                        compassUpdate = 'E';
+                        break;                         
                 }
-                else if (commandDirectives[i % nDirectives] == 'R')
+                compass = compassUpdate;
+            }
+            else if (commandDirectives[i % nDirectives] == 'R')
+            {
+                char compassUpdate(compass); 
+                switch(compass)
                 {
-                    char compassUpdate(compass); 
-                    switch(compass)
-                    {
-                        case 'N':
-                            compassUpdate = 'E';
-                            break;  
-                        case 'E':
-                            compassUpdate = 'S';
-                            break; 
-                        case 'W':
-                            compassUpdate = 'N';
-                            break; 
-                        case 'S':
-                            compassUpdate = 'W';
-                            break; 
-                        
-                    }
-                    compass = compassUpdate;
+                    case 'N':
+                        compassUpdate = 'E';
+                        break;  
+                    case 'E':
+                        compassUpdate = 'S';
+                        break; 
+                    case 'W':
+                        compassUpdate = 'N';
+                        break; 
+                    case 'S':
+                        compassUpdate = 'W';
+                        break; 
+                    
                 }
-
+                compass = compassUpdate;
             }
 
             if ((i%nDirectives == 0) && (i>=(nDirectives-1)) && (coordinates[coordinates.size()-1] == pair<int, int>(0,0)))
