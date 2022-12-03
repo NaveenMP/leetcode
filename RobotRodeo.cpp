@@ -126,10 +126,10 @@ vector <string> doesCircleExist(vector<string> commands)
                 commandResult = "YES";
                 break;
             }
-            cout << "i = " << i <<"; directive = " << commandDirectives[i % nDirectives] <<", "<< compass << ", " << coordinates[coordinates.size()-1] << endl;            
+            //cout << "i = " << i <<"; directive = " << commandDirectives[i % nDirectives] <<", "<< compass << ", " << coordinates[coordinates.size()-1] << endl;            
         }
 
-        cout << endl << "For command " << commandDirectives << " : " << endl << coordinates << endl;
+        //cout << endl << "For command " << commandDirectives << " : " << endl << coordinates << endl;
         
         results[n] = commandResult;
 
