@@ -66,11 +66,11 @@ vector <string> doesCircleExist(vector<string> commands)
                 }
                 else if(commandDirectives[0] == 'R')
                 {
-                    compass = 'W';
+                    compass = 'E';
                 }
                 else if(commandDirectives[0] == 'L')
                 {
-                    compass = 'E';
+                    compass = 'W';
                 }
             }
             else
