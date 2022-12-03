@@ -7,16 +7,21 @@
 using namespace std;
 /*
 *   
-*  INPUT
+*  INPUT:
 *  Vector of strings which contains path commands (Sequences containing G, L, R commands)
 *
-*  OUTPUT
+*  OUTPUT:
 *  vector of strings with YES or NO for each set of input command indication whether circle/closed-loop pattern is found 
 *  
 *  CONSTRAINTS:
 *  1 <= |commands[i]| <= 2500
 *  1 <= n <= 10
 *  Each command consists of G, L, and R only
+*
+*  COMPILE AND RUN:
+*  g++ -o RobotRodeo.exe RobotRodeo.cpp
+*  ./RobotRodeo.exe
+*
 */
 
 vector <string> doesCircleExist(vector<string> commands);
