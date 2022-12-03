@@ -23,7 +23,8 @@ vector <string> doesCircleExist(vector<string> commands);
 pair<int, int> operator+=(pair<int, int> &Lobj, const pair<int, int> &Robj);
 pair<int, int> operator+(const pair<int, int> &obj1, const pair<int, int> &obj2);
 bool operator==(const pair<int, int> &Lobj, const pair<int, int> &Robj);
-ostream& operator<<(ostream &os, vector<pair<int, int>> vecIntPair);
+ostream& operator<<(ostream &os, const vector<pair<int, int>> vecIntPair);
+ostream& operator<<(ostream &os, const pair<int, int> IntPair);
 
 int main()
 {
@@ -76,61 +77,78 @@ vector <string> doesCircleExist(vector<string> commands)
             {
                 if (commandDirectives[i % nDirectives] == 'G')
                 {
+                    pair<int,int> nextCoordinate;
                     switch(compass)
                     {
                         case 'N':
-                            coordinates.push_back(coordinates[i-1]+pair<int, int>(0,1));
+                            nextCoordinate = coordinates[i-1]+pair<int, int>(0,1);
+                            break;
                         case 'E':
-                            coordinates.push_back(coordinates[i-1]+pair<int, int>(-1,0));
+                            nextCoordinate = coordinates[i-1]+pair<int, int>(1,0);
+                            break;
                         case 'W':
-                            coordinates.push_back(coordinates[i-1]+pair<int, int>(1,0));
+                            nextCoordinate = coordinates[i-1]+pair<int, int>(-1,0);
+                            break;
                         case 'S':
-                            coordinates.push_back(coordinates[i-1]+pair<int, int>(0,-1));   
+                            nextCoordinate = coordinates[i-1]+pair<int, int>(0,-1);
+                            break;   
                     }
+                    coordinates.push_back(nextCoordinate);
                 }
 
-                char compassUpdate('N'); 
                 if (commandDirectives[i % nDirectives] == 'L')
                 {
+                    char compassUpdate(compass); 
                     switch(compass)
                     {
                         case 'N':
-                            compassUpdate = 'E'; 
-                        case 'E':
-                            compassUpdate = 'S';
-                        case 'W':
-                            compassUpdate = 'N';
-                        case 'S':
                             compassUpdate = 'W';
-                        
+                            break; 
+                        case 'E':
+                            compassUpdate = 'N';
+                            break; 
+                        case 'W':
+                            compassUpdate = 'S';
+                            break; 
+                        case 'S':
+                            compassUpdate = 'E';
+                            break;                         
                     }
+                    compass = compassUpdate;
                 }
                 else if (commandDirectives[i % nDirectives] == 'R')
                 {
+                    char compassUpdate(compass); 
                     switch(compass)
                     {
                         case 'N':
-                            compassUpdate = 'W'; 
-                        case 'E':
-                            compassUpdate = 'N';
-                        case 'W':
-                            compassUpdate = 'S';
-                        case 'S':
                             compassUpdate = 'E';
+                            break;  
+                        case 'E':
+                            compassUpdate = 'S';
+                            break; 
+                        case 'W':
+                            compassUpdate = 'N';
+                            break; 
+                        case 'S':
+                            compassUpdate = 'W';
+                            break; 
                         
                     }
+                    compass = compassUpdate;
                 }
-                compass = compassUpdate;
 
-                if (i%nDirectives == 0 && i>=nDirectives == 0 && coordinates[coordinates.size()-1] == pair<int, int>(0,0))
-                {
-                    commandResult = "YES";
-                    break;
-                }
-            }            
+            }
+
+            if ((i%nDirectives == 0) && (i>=(nDirectives-1)) && (coordinates[i] == pair<int, int>(0,0)))
+            {
+                commandResult = "YES";
+                break;
+            }
+            cout << compass << coordinates[i] << ",";            
         }
 
-        cout << coordinates << endl;
+        cout << endl << "For command " << commandDirectives << " : " << endl << coordinates << endl;
         
         results[n] = commandResult;
 
@@ -163,14 +181,20 @@ bool operator==(const pair<int, int> &Lobj, const pair<int, int> &Robj)
     return res;
 }
 
-ostream& operator<<(ostream &os, vector<pair<int, int>> vecIntPair)
+ostream& operator<<(ostream &os, const vector<pair<int, int>> vecIntPair)
 {
     for (auto i=0; i<vecIntPair.size(); ++i)
     {
-        if (i != vecIntPair.size())
+        if (i != vecIntPair.size()-1)
             os << "(" << vecIntPair[i].first << "," << vecIntPair[i].second << "),";
         else
-            os << "(" << vecIntPair[i].first << "," << vecIntPair[i].second << endl;
+            os << "(" << vecIntPair[i].first << "," << vecIntPair[i].second << ")" << endl;
     }
     return os; 
+}
+
+ostream& operator<<(ostream &os, const pair<int, int> IntPair)
+{
+    os << "(" << IntPair.first << "," << IntPair.second << ")";
+    return os;
 }
