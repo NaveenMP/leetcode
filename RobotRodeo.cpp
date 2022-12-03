@@ -55,22 +55,25 @@ vector <string> doesCircleExist(vector<string> commands)
         vector<pair<int, int>> coordinates;
         char compass('N');
 
+        coordinates.push_back(pair<int, int>(0,0));
         for(size_t i=0; i< maxDirectives; ++i)
         {
             if (i == 0)
             {   
-                coordinates.push_back(pair<int, int>(0,0));
-                if (commandDirectives[0] == 'G')
+                if (commandDirectives[i] == 'G')
                 {
                     compass = 'N';
+                    coordinates.push_back(pair<int, int>(0,1));
                 }
-                else if(commandDirectives[0] == 'R')
+                else if(commandDirectives[i] == 'R')
                 {
                     compass = 'E';
+                    coordinates.push_back(pair<int, int>(0,0));
                 }
-                else if(commandDirectives[0] == 'L')
+                else if(commandDirectives[i] == 'L')
                 {
                     compass = 'W';
+                    coordinates.push_back(pair<int, int>(0,0));
                 }
             }
             else
@@ -81,16 +84,16 @@ vector <string> doesCircleExist(vector<string> commands)
                     switch(compass)
                     {
                         case 'N':
-                            nextCoordinate = coordinates[i-1]+pair<int, int>(0,1);
+                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(0,1);
                             break;
                         case 'E':
-                            nextCoordinate = coordinates[i-1]+pair<int, int>(1,0);
+                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(1,0);
                             break;
                         case 'W':
-                            nextCoordinate = coordinates[i-1]+pair<int, int>(-1,0);
+                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(-1,0);
                             break;
                         case 'S':
-                            nextCoordinate = coordinates[i-1]+pair<int, int>(0,-1);
+                            nextCoordinate = coordinates[coordinates.size()-1]+pair<int, int>(0,-1);
                             break;   
                     }
                     coordinates.push_back(nextCoordinate);
@@ -140,12 +143,12 @@ vector <string> doesCircleExist(vector<string> commands)
 
             }
 
-            if ((i%nDirectives == 0) && (i>=(nDirectives-1)) && (coordinates[i] == pair<int, int>(0,0)))
+            if ((i%nDirectives == 0) && (i>=(nDirectives-1)) && (coordinates[coordinates.size()-1] == pair<int, int>(0,0)))
             {
                 commandResult = "YES";
                 break;
             }
-            cout << compass << coordinates[i] << ",";            
+            cout << "i = " << i <<"; directive = " << commandDirectives[i % nDirectives] <<", "<< compass << ", " << coordinates[coordinates.size()-1] << endl;            
         }
 
         cout << endl << "For command " << commandDirectives << " : " << endl << coordinates << endl;
