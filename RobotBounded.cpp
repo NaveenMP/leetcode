@@ -13,6 +13,8 @@ using namespace std;
 *  g++ -o RobotBounded.exe RobotBounded.cpp
 *  ./RobotBounded.exe
 *
+*
+*  TODO: Add matplotlib trajectory visualization
 */
 
 pair<int, int> operator+=(pair<int, int> &Lobj, const pair<int, int> &Robj);
