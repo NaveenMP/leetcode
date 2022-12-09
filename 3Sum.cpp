@@ -48,14 +48,13 @@ public:
                     int b_idx = twoSumIndicesVec[0];
                     int c_idx = twoSumIndicesVec[1];
                     vector<int> res{a, nums[b_idx], nums[c_idx]};
-                    if (!permutationExists(result, res))
-                    {
-                        result.push_back(vector<int>{a, nums[b_idx], nums[c_idx]});
-                    }
+                    result.push_back(vector<int>{a, nums[b_idx], nums[c_idx]});
                     //resultIndices.push_back(vector<int>{a_idx, b_idx, c_idx});
                     //cout << "nums : " << vector<int>{a, nums[b_idx], nums[c_idx]} << " | Indices : " << vector<int>{a_idx, b_idx, c_idx} << endl;
                 }
             }
+
+            removePermutations(result);
         }
         return result;
     }
@@ -79,12 +78,8 @@ public:
             {
                for (auto b_idx:b_idx_vec)
                {
-                 //vector<int> newRes{b_idx, c_idx};
-                 //vector<int> revNewRes{c_idx, b_idx};
-                 //if (b_idx != c_idx && count(result.begin(),result.end(),newRes)==0 && count(result.begin(),result.end(),revNewRes)==0)
                  if (b_idx != c_idx)
                  {
-                    //result.push_back(vector<int>{b_idx, c_idx});
                     result.insert(set<int>{b_idx, c_idx});
                  }
                }           
@@ -110,36 +105,18 @@ public:
         return res;
     }
 
-    bool permutationExists(const vector<vector<int>> resultVec, const vector<int> newResult)
+    void removePermutations(vector<vector<int>> &result)
     {
-        bool isPerm(false);
-        for (auto result:resultVec)
-        {
-            vector<int> vec1 = result;
-            vector<int> vec2 = newResult;
-            sort(vec1.begin(),vec1.end());
-            sort(vec2.begin(),vec2.end());
-            isPerm = (vec1 == vec2);
-            if (isPerm)
-            {
-                return true;                    
-            }
-        }
-        return false;
-    }
-
-    void removePermutations(vector<vector<int>> &results)
-    {
-        set<vector<int>> resultsSet;
-        for (auto i = 0; i < results.size(); ++i)
+        set<vector<int>> resultSet;
+        for (auto i = 0; i < result.size(); ++i)
         { 
-            auto vec = results[i];
+            auto vec = result[i];
             sort(vec.begin(),vec.end());
-            resultsSet.insert(vec);
+            resultSet.insert(vec);
         }
 
         results.clear();
-        for (auto vec:resultsSet)
+        for (auto vec:resultSet)
         {
             results.push_back(vec);
         }
