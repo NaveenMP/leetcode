@@ -2,6 +2,7 @@
 
 % last commit hash
 git log --pretty=format:'%h' -n 1
+git log -n 1 --pretty=format:%H -- my/file.c (for a specific file)
 (or)
 git rev-parse --short HEAD (for short hash)
 (or)
