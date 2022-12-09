@@ -29,7 +29,8 @@ vector<int> findMatchingIndices(const vector<int>& vec, const int elem);
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
-        vector<vector<int>> result;
+        set<vector<int>> resultSet; // To avoid permutations of older results from getting inserted in the loop
+        vector<int> res(3);
         //vector<vector<int>> resultIndices;
 
         int sum = 0;
@@ -48,15 +49,20 @@ public:
                     vector<int> twoSumIndicesVec = vector<int>(twoSumIndicesSet.begin(), twoSumIndicesSet.end()); 
                     int b_idx = twoSumIndicesVec[0];
                     int c_idx = twoSumIndicesVec[1];
-                    vector<int> res{a, nums[b_idx], nums[c_idx]};
-                    result.push_back(res);
+                    res[0] = a; 
+                    res[1] = nums[b_idx];
+                    res[2] = nums[c_idx];
+                    sort(res.begin(),res.end());
+                    resultSet.insert(res);
                     //resultIndices.push_back(vector<int>{a_idx, b_idx, c_idx});
                     //cout << "nums : " << vector<int>{a, nums[b_idx], nums[c_idx]} << " | Indices : " << vector<int>{a_idx, b_idx, c_idx} << endl;
                 }
             }
-
-            removePermutations(result);
         }
+
+        vector<vector<int>> result(resultSet.begin(), resultSet.end());
+
+        resultSet.clear();
         return result;
     }
 
@@ -105,24 +111,6 @@ public:
         
         return res;
     }
-
-    void removePermutations(vector<vector<int>> &result)
-    {
-        set<vector<int>> resultSet;
-        for (auto i = 0; i < result.size(); ++i)
-        { 
-            auto vec = result[i];
-            sort(vec.begin(),vec.end());
-            resultSet.insert(vec);
-        }
-
-        result.clear();
-        for (auto vec:resultSet)
-        {
-            result.push_back(vec);
-        }
-    }
-
 
 };
 
