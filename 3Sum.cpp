@@ -171,8 +171,11 @@ int main()
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
 
-    cout << "result : " << endl << result << endl;
-    cout << "Elapsed time: " << elapsedMilliSecs << "ms" << endl;
+    //cout << "result : " << endl << result << endl;
+    cout << "---------- SUMMARY ----------" << endl;
+    cout << "Input size   : " << nums.size() << endl;
+    cout << "Output rows  : " << result.size() << endl;
+    cout << "Elapsed time : " << elapsedMilliSecs << "ms" << endl;
     
     return 0;
 }
