@@ -18,6 +18,7 @@
 #include <map>
 #include <algorithm>
 #include <set>
+#include <ctime>
 
 using namespace std;
 
@@ -162,12 +163,16 @@ int main()
     -8,2,-9,-15,14,-11,-1,-8,5,-13,14,-2,0,-13,14,-12,12,-13,-3,-13,-12,-2,-15,4,8,4,-1,-6,11,11,-7,-12,-2,-8,10,-3,-4,-6,4,-14,-12,-5,0,
     3,-3,-9,-2,-6,-15,2,-11,-11,8,-11,8,-7,8,14,-5,4,10,3,-1,-15,10,-6,-11,13,-5,1,-15};
 
-    cout << "Input : " << nums << endl;
+    cout << "Input : " << endl << nums << endl;
 
     Solution S;
+    clock_t start = clock();
     vector<vector<int>> result = S.threeSum(nums);
+    double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
+    double elapsedMilliSecs = elapsedSecs*1000;
 
-    cout << result << endl;
+    cout << "result : " << endl << result << endl;
+    cout << "Elapsed time: " << elapsedMilliSecs << "ms" << endl;
     
     return 0;
 }
