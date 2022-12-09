@@ -39,17 +39,17 @@ public:
             int a = nums.back();
             int a_idx = nums.size() - 1; // Discard this if twoSumIndicesVec returns empty
             nums.pop_back();
-            set<set<int>> twoSumIndicesSetOfSet = twoSumIndices(nums, complement);
+            set<set<int>> twoSumIndicesSetOfSets = twoSumIndices(nums, complement);
 
-            if (!twoSumIndicesSetOfSet.empty())
+            if (!twoSumIndicesSetOfSets.empty())
             {
-                for(auto twoSumIndicesSet: twoSumIndicesSetOfSet)
+                for(auto twoSumIndicesSet: twoSumIndicesSetOfSets)
                 {
                     vector<int> twoSumIndicesVec = vector<int>(twoSumIndicesSet.begin(), twoSumIndicesSet.end()); 
                     int b_idx = twoSumIndicesVec[0];
                     int c_idx = twoSumIndicesVec[1];
                     vector<int> res{a, nums[b_idx], nums[c_idx]};
-                    result.push_back(vector<int>{a, nums[b_idx], nums[c_idx]});
+                    result.push_back(res);
                     //resultIndices.push_back(vector<int>{a_idx, b_idx, c_idx});
                     //cout << "nums : " << vector<int>{a, nums[b_idx], nums[c_idx]} << " | Indices : " << vector<int>{a_idx, b_idx, c_idx} << endl;
                 }
@@ -150,7 +150,8 @@ int main()
 {
     //vector<int> nums{-1,0,1,2,-1,-4}; // {-1,0,1,2,-1,-4} | {0,0,0}
 
-    /* Leetcode test pass after commit 71af64d14d82a3133012c8d65ceb02fd6693b62a 
+    /* Leetcode test pass after commit 71af64d14d82a3133012c8d65ceb02fd6693b62a */
+    /*
     vector<int> nums{5,-9,-11,9,9,-4,14,10,-11,1,-13,11,10,14,-3,-3,-4,6,-15,6,6,-13,7,-11,-15,10,-8,13,-14,-12,12,6,-6,8,0,10,-11,-8,
     -2,-6,8,0,12,3,-9,-6,8,3,-15,0,-6,-1,3,9,-5,-5,4,2,-15,-3,5,13,-11,7,6,-4,2,11,-5,7,12,-11,-15,1,-1,-9,10,-8,1,2,8,
     11,-14,-4,-3,-12,-2,8,5,-1,-9,-4,-3,-13,-12,-12,-10,-3,6,1,12,3,-3,12,11,11,10};
@@ -164,6 +165,7 @@ int main()
     3,-3,-9,-2,-6,-15,2,-11,-11,8,-11,8,-7,8,14,-5,4,10,3,-1,-15,10,-6,-11,13,-5,1,-15};
 
     cout << "Input : " << endl << nums << endl;
+    const size_t inputSize(nums.size());
 
     Solution S;
     clock_t start = clock();
@@ -173,7 +175,7 @@ int main()
 
     //cout << "result : " << endl << result << endl;
     cout << "---------- SUMMARY ----------" << endl;
-    cout << "Input size   : " << nums.size() << endl;
+    cout << "Input size   : " << inputSize << endl;
     cout << "Output rows  : " << result.size() << endl;
     cout << "Elapsed time : " << elapsedMilliSecs << "ms" << endl;
     
