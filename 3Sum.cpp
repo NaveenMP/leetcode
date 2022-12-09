@@ -115,10 +115,10 @@ public:
             resultSet.insert(vec);
         }
 
-        results.clear();
+        result.clear();
         for (auto vec:resultSet)
         {
-            results.push_back(vec);
+            result.push_back(vec);
         }
     }
 
