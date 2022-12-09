@@ -128,6 +128,23 @@ public:
         return false;
     }
 
+    void removePermutations(vector<vector<int>> &results)
+    {
+        set<vector<int>> resultsSet;
+        for (auto i = 0; i < results.size(); ++i)
+        { 
+            auto vec = results[i];
+            sort(vec.begin(),vec.end());
+            resultsSet.insert(vec);
+        }
+
+        results.clear();
+        for (auto vec:resultsSet)
+        {
+            results.push_back(vec);
+        }
+    }
+
 
 };
 
