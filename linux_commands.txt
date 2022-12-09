@@ -1,0 +1,8 @@
+%% Git
+
+% last commit hash
+git log --pretty=format:'%h' -n 1
+(or)
+git rev-parse --short HEAD (for short hash)
+(or)
+git rev-parse --verify HEAD
