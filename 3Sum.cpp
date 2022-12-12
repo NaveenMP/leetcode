@@ -5,13 +5,6 @@
 *
 * g++ -o 3Sum 3Sum.cpp -std=c++20 && ./3Sum 
 *
-* Logic: 
-* (a + b + c) = sum
-* (b+c) = sum-a
-* complement = sum-a
-* (b+c) = complement
-* b = complement - c
-*
 * Version check:
 * latest: git log -n 1 --pretty=format:%H -- 3Sum.cpp
 * 
@@ -43,13 +36,15 @@ public:
         nums.clear();
 
         int N = numsV.size();
+        int j(1),k(N-1);
+
         for (auto i=0; i < N; ++i)
         {
             if (i > 0 && numsV[i] == numsV[i-1])
                 continue;
             
-            int j = i + 1;
-            int k = N-1;
+            j = i + 1;
+            k = N-1;
 
             while (j < k)
             {
@@ -57,16 +52,13 @@ public:
 
                 if (sum < 0)
                 {
-                    //j += 1;
-                    while (j++ < k && numsV[j] == numsV[j-1]){}
-                        //j += 1;
+                    j += 1;
+                    while (j < k && numsV[j] == numsV[j-1])
+                        j += 1;
                 }
                 else if (sum > 0)
                 {
-                    --k;
-                    //k -= 1;
-                    //while (j < k && nums[k] == nums[k-1])
-                    //        k -= 1;
+                    k -= 1;
                 }
                 else
                 {
@@ -74,9 +66,9 @@ public:
                     resultTriplet[1] = numsV[j];
                     resultTriplet[2] = numsV[k];
                     results.push_back(resultTriplet);
-                    //j += 1;
-                    while (j++ < k && numsV[j] == numsV[j-1]){}
-                            //j += 1;
+                    j += 1;
+                    while (j < k && numsV[j] == numsV[j-1])
+                            j += 1;
                 }
             }            
         }
@@ -256,135 +248,3 @@ int main()
     
     return 0;
 }
-
-/*
-vector<vector<int>> threeSum(vector<int>& nums) {
-        set<vector<int>> resultSet; // To avoid permutations of older results from getting inserted in the loop
-        
-        //map<int, set<int>> numsIndicesMap;
-        //for (auto i=0; i < nums.size(); ++i)
-        //    numsIndicesMap[nums[i]].insert(i);
-        //cout << "size of numsIndicesMap : " << numsIndicesMap.size() << endl;
-
-        vector<int> res(3);
-        //vector<vector<int>> resultIndices;
-
-        int sum = 0;
-        while (!nums.empty())
-        {
-            int complement = sum-nums.back();
-            int a = nums.back();
-            int a_idx = nums.size() - 1; // Discard this if twoSumIndicesVec returns empty
-            nums.pop_back();
-            set<set<int>> twoSumIndicesSetOfSets = twoSumIndices(nums, complement);
-            //set<set<int>> twoSumIndicesSetOfSets = twoSumIndices(numsIndicesMap, complement);
-            //numsIndicesMap.erase(a);
-
-            if (!twoSumIndicesSetOfSets.empty())
-            {
-                for(auto twoSumIndicesSet: twoSumIndicesSetOfSets)
-                {
-                    vector<int> twoSumIndicesVec = vector<int>(twoSumIndicesSet.begin(), twoSumIndicesSet.end()); 
-                    int b_idx = twoSumIndicesVec[0];
-                    int c_idx = twoSumIndicesVec[1];
-                    res[0] = a; 
-                    res[1] = nums[b_idx];
-                    res[2] = nums[c_idx];
-                    sort(res.begin(),res.end());
-                    resultSet.insert(res);
-                    //resultIndices.push_back(vector<int>{a_idx, b_idx, c_idx});
-                    //cout << "nums : " << vector<int>{a, nums[b_idx], nums[c_idx]} << " | Indices : " << vector<int>{a_idx, b_idx, c_idx} << endl;
-                }
-            }
-        }
-
-        vector<vector<int>> result(resultSet.begin(), resultSet.end());
-        resultSet.clear();
-
-        return result;
-    }
-
-*/
-
-    /*
-     * b = sum - a
-     * find a and b, exclude -sum
-     * 
-    */
-
-    /*
-    set<set<int>> twoSumIndices(vector<int>& nums, int complement)
-    {    
-        set<set<int>> result;
-
-        for (auto c_idx = 0; c_idx < nums.size(); ++c_idx)
-        { 
-            int c = nums[c_idx];
-            int b = complement - c;
-            vector<int> b_idx_vec = findMatchingIndices(nums, b); // Find indices of two elements that add up to complement
-            if (!b_idx_vec.empty())
-            {
-               for (auto b_idx:b_idx_vec)
-               {
-                 if (b_idx != c_idx)
-                 {
-                    result.insert(set<int>{b_idx, c_idx});
-                 }
-               }           
-            }
-
-        }
-        
-        return result;
-    }
-    */
-
-    /* Faster when run locally, but causes heap memory overflow in leetcode for the first test with even small input vector*/
-    /*
-    set<set<int>> twoSumIndices(const map<int, set<int>>& numsIndicesMap, int complement)
-    {
-        set<set<int>> result;
-        set<int> b_idx_vec;
-        // Find indices of two elements that add up to complement
-        for (auto numsPair:numsIndicesMap)
-        { 
-            int c = numsPair.first;
-            int b = complement - c;
-            if (numsIndicesMap.count(b)>0)
-                b_idx_vec = numsIndicesMap.at(b); //b_idx_vec.insert(numsIndicesMap[b].begin(), numsIndicesMap[b].end());
-            else 
-                b_idx_vec.clear();
-
-            if (!b_idx_vec.empty())
-            {
-               set<int> c_idx_vec = numsPair.second;
-               for (auto c_idx:c_idx_vec)
-               {
-                for (auto b_idx:b_idx_vec)
-                {
-                    result.insert(set<int>{b_idx, c_idx});
-                }
-               }           
-            }
-
-        }
-        return result;
-        
-    }
-    */
-
-    /*
-    vector<int> findMatchingIndices(const vector<int>& vec, const int elem)
-    {
-        vector<int> res;
-        for (auto i = 0; i < vec.size(); ++i)
-        {
-            if (vec[i] == elem)
-            {
-                res.push_back(i);
-            }
-        }
-        
-        return res;
-    }
-    */
