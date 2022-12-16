@@ -27,7 +27,7 @@ public:
         sort(nums.begin(), nums.end());
 
         int sum = 0;
-        size_t b(1), c(N-1), d(N);
+        size_t b(1), c(N-2), d(N-1);
 
         for (size_t a=0; a<N; ++a)
         {
@@ -35,7 +35,7 @@ public:
                 continue;
 
             b = a+1;
-            d = N;
+            d = N-1;
             c = d-1;
 
             set<size_t> distinctIndices{a, b, c, d};
@@ -130,7 +130,10 @@ int main()
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
 
-    //cout << "result : " << endl << result << endl;
+    if (result.size() < 20)
+    {
+        cout << "result : " << endl << result << endl;
+    }
     cout << "---------- SUMMARY ----------" << endl;
     cout << "Input size   : " << inputSize << endl;
     cout << "Output rows  : " << result.size() << endl;
