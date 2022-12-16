@@ -13,6 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <set>
 
 using namespace std;
 
@@ -37,9 +38,9 @@ public:
             d = N;
             c = d-1;
 
-            set<int> distinctIndices{a, b, c, d};
+            set<size_t> distinctIndices{a, b, c, d};
 
-            if (distinctIndices.size()! = 4)
+            if (distinctIndices.size() != 4)
                 continue;
 
             while ((a < b) && (b < c) && (c < d))
@@ -51,11 +52,19 @@ public:
                 {
                     ++b;
                     while ((b < c-1) && (nums[b] == nums[b-1]))
+                    {
                         ++b;
-                    else if (b == c-1 && a < b){
-                        ++a;
-                        while (a < b && nums[a] == nums[a-1])
+                    }
+                    if (b == c-1)
+                    {
+                        while (a < b)
+                        {
                             ++a;
+                        }
+                        while (a < b && nums[a] == nums[a-1])
+                        {
+                            ++a;
+                        }
                     }
                 }
                 else if(sum > target)
@@ -70,6 +79,7 @@ public:
                 else
                 {
                     result.push_back(vector<int>{nums[a], nums[b], nums[c], nums[d]});
+                    ++b;
                 }
 
             }
@@ -78,6 +88,7 @@ public:
 
         }
         
+        return result;
     }
 };
 
@@ -103,7 +114,9 @@ ostream& operator<<(ostream& os, const vector<int>& obj)
 
 int main()
 {
-    vector<int> nums{};
+    //Input: nums = [1,0,-1,0,-2,2], target = 0
+    //Input: nums = [2,2,2,2,2], target = 8
+    vector<int> nums{1,0,-1,0,-2,2};
 
     if (nums.size() < 200)
     {
@@ -113,7 +126,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    vector<vector<int>> result = S.fourSum(nums);
+    vector<vector<int>> result = S.fourSum(nums, 0);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
 
