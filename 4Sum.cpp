@@ -26,9 +26,9 @@ public:
         sort(nums.begin(), nums.end());
 
         int sum = 0;
-        int b(1), c(N-1), d(N);
+        size_t b(1), c(N-1), d(N);
 
-        for (a=0; a<N; ++a)
+        for (size_t a=0; a<N; ++a)
         {
             if (a > 0 && nums[a] == nums[a-1])
                 continue;
