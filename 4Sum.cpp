@@ -6,7 +6,7 @@
 * nums[a] + nums[b] + nums[c] + nums[d] == target
 * You may return the answer in any order.
 *
-*
+* g++ -o 4Sum 4Sum.cpp -std=c++20 && ./4Sum 
 *
 */
 
@@ -23,7 +23,7 @@ public:
         vector<vector<int>> result;
         size_t N = nums.size();
 
-        sort(target.begin(), target.end());
+        sort(nums.begin(), nums.end());
 
         int sum = 0;
         int b(1), c(N-1), d(N);
