@@ -99,8 +99,6 @@ public:
         for (auto it = resultSet.begin(); it != resultSet.end(); ) {
             resultVec.push_back(std::move(resultSet.extract(it++).value()));
         }
-
-        cout << "resultSet.size() = " << resultSet.size() << endl;
         
         return resultVec;
     }
@@ -128,8 +126,9 @@ ostream& operator<<(ostream& os, const vector<int>& obj)
 
 int main()
 {
-    //Input: nums = [1,0,-1,0,-2,2], target = 0
-    //Input: nums = [2,2,2,2,2], target = 8
+    //Input: nums = [1,0,-1,0,-2,2], target = 0 | Basic
+    //Input: nums = [2,2,2,2,2], target = 8     | Basic 
+    //Input: nums = {[-3,-1,0,2,4,5]}, target = 2 | 186/292
     vector<int> nums{2,2,2,2,2};     //{1,0,-1,0,-2,2};
     int target = 8;
 
