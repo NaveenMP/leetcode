@@ -14,6 +14,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <algorithm>
 
 using namespace std;
 
@@ -21,7 +22,8 @@ class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
 
-        vector<vector<int>> result;
+        set<vector<int>> resultSet;
+        vector<vector<int>> resultVec;
         size_t N = nums.size();
 
         sort(nums.begin(), nums.end());
@@ -47,48 +49,60 @@ public:
             {
                 sum = nums[a] + nums[b] + nums[c] + nums[d];
 
-
                 if(sum < target)
                 {
-                    ++b;
-                    while ((b < c-1) && (nums[b] == nums[b-1]))
-                    {
-                        ++b;
-                    }
                     if (b == c-1)
                     {
-                        while (a < b)
+                        if (a < b)
                         {
                             ++a;
-                        }
-                        while (a < b && nums[a] == nums[a-1])
-                        {
-                            ++a;
+                            while (a < b && nums[a] == nums[a-1])
+                            {
+                                ++a;
+                            }
                         }
                     }
+                    else
+                    {
+                        ++b;
+                        while ((b < c) && (nums[b] == nums[b-1]))
+                        {
+                            ++b;
+                        }
+                    }
+                    
                 }
                 else if(sum > target)
                 {
-                    --c;
+                    
                     if (c == b + 1 && c < d)
                     {
                         --d;
+                    }
+                    else
+                    {
+                        --c;
                     }
 
                 }
                 else
                 {
-                    result.push_back(vector<int>{nums[a], nums[b], nums[c], nums[d]});
+                    resultSet.emplace(vector<int>{nums[a], nums[b], nums[c], nums[d]});
                     ++b;
                 }
 
             }
 
-            
-
         }
+
+        resultVec.reserve(resultSet.size());
+        for (auto it = resultSet.begin(); it != resultSet.end(); ) {
+            resultVec.push_back(std::move(resultSet.extract(it++).value()));
+        }
+
+        cout << "resultSet.size() = " << resultSet.size() << endl;
         
-        return result;
+        return resultVec;
     }
 };
 
@@ -116,7 +130,8 @@ int main()
 {
     //Input: nums = [1,0,-1,0,-2,2], target = 0
     //Input: nums = [2,2,2,2,2], target = 8
-    vector<int> nums{1,0,-1,0,-2,2};
+    vector<int> nums{2,2,2,2,2};     //{1,0,-1,0,-2,2};
+    int target = 8;
 
     if (nums.size() < 200)
     {
@@ -126,7 +141,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    vector<vector<int>> result = S.fourSum(nums, 0);
+    vector<vector<int>> result = S.fourSum(nums, target);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
 
