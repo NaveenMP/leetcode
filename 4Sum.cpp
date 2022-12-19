@@ -24,83 +24,65 @@ public:
 
         set<vector<int>> resultSet;
         vector<vector<int>> resultVec;
-        size_t N = nums.size();
 
         sort(nums.begin(), nums.end());
 
-        int sum = 0;
-        size_t b(1), c(N-2), d(N-1);
+        vector<int> currentResultVec;
+        Nsum(nums, target, 0, 4, resultVec, currentResultVec);
 
-        for (size_t a=0; a<N; ++a)
-        {
-            if (a > 0 && nums[a] == nums[a-1])
-                continue;
-
-            b = a+1;
-            d = N-1;
-            c = d-1;
-
-            set<size_t> distinctIndices{a, b, c, d};
-
-            if (distinctIndices.size() != 4)
-                continue;
-
-            while ((a < b) && (b < c) && (c < d))
-            {
-                sum = nums[a] + nums[b] + nums[c] + nums[d];
-
-                if(sum < target)
-                {
-                    if (b == c-1)
-                    {
-                        if (a < b)
-                        {
-                            ++a;
-                            while (a < b && nums[a] == nums[a-1])
-                            {
-                                ++a;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ++b;
-                        while ((b < c) && (nums[b] == nums[b-1]))
-                        {
-                            ++b;
-                        }
-                    }
-                    
-                }
-                else if(sum > target)
-                {
-                    
-                    if (c == b + 1 && c < d)
-                    {
-                        --d;
-                    }
-                    else
-                    {
-                        --c;
-                    }
-
-                }
-                else
-                {
-                    resultSet.emplace(vector<int>{nums[a], nums[b], nums[c], nums[d]});
-                    ++b;
-                }
-
-            }
-
-        }
-
+        /*
         resultVec.reserve(resultSet.size());
         for (auto it = resultSet.begin(); it != resultSet.end(); ) {
             resultVec.push_back(std::move(resultSet.extract(it++).value()));
         }
+        */
         
         return resultVec;
+    }
+
+    void Nsum(vector<int>& nums, int target, unsigned firstIndex, unsigned N, vector<vector<int>>& resultVec, vector<int>& currentResultVec)
+    {
+
+        auto numsLength = nums.size();
+
+        if (N==2)
+        {
+            int l(0),r(numsLength-1);
+            while (l < r)
+            {
+                int sum = nums[firstIndex + l] + nums[r];
+
+                if (sum < target)
+                {
+                    ++l;
+                }
+                else if (sum > target)
+                {
+                    --r;
+                }
+                else
+                {
+                    currentResultVec.push_back(nums[firstIndex + l]);
+                    currentResultVec.push_back(nums[r]);
+                    resultVec.push_back(currentResultVec);                 
+                    while (l < r && nums[l]==nums[l-1]){
+                            ++l;
+                    }
+                    while (l < r && nums[r]==nums[r-1]){
+                            --r;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for(auto i=0; i < numsLength; ++i)
+            {
+                Nsum(nums, target - nums[i], i+1, N-1, resultVec, currentResultVec);
+                currentResultVec.push_back(nums[i]);
+            } 
+        }
+
     }
 };
 
@@ -128,9 +110,9 @@ int main()
 {
     //Input: nums = [1,0,-1,0,-2,2], target = 0 | Basic
     //Input: nums = [2,2,2,2,2], target = 8     | Basic 
-    //Input: nums = {[-3,-1,0,2,4,5]}, target = 2 | 186/292
-    vector<int> nums{2,2,2,2,2};     //{1,0,-1,0,-2,2};
-    int target = 8;
+    //Input: nums = {-3,-1,0,2,4,5}, target = 2 | 186/292
+    vector<int> nums{-3,-1,0,2,4,5};     //{1,0,-1,0,-2,2};
+    int target = 2;
 
     if (nums.size() < 200)
     {
