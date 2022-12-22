@@ -24,6 +24,10 @@
 
 using namespace std;
 
+const int int_numbits = sizeof(int)*8;
+const int int_min = (1 << int_numbits-1);
+const int int_max = ~int_min;
+
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
@@ -49,10 +53,17 @@ public:
 
         int numsLength = nums.size();
 
-        if (N < 2 || nums.size() < N)
+        if (any_of(nums.begin(), nums.end(), [](int x){ return (x < int_min || x > int_max);} )) // move thus condition outside function
         {
             return;
-            /* Enable for fully generalized Nsum
+        }
+        if ((target < int_min) || (target > int_max) || (target < N*nums[0]) || (target > N*nums[numsLength-1]) || (nums.size() < N))
+        {
+            return;
+        }
+
+        if (N < 2)
+        {
             for (auto i=0; i<nums.size(); ++i)
             {
                 if (target == nums[i])
@@ -63,7 +74,6 @@ public:
                 }
             }
             return;
-            */
         }
 
         if (N==2)
@@ -89,10 +99,6 @@ public:
                     currentResultVec.push_back(nums[l]);
                     currentResultVec.push_back(nums[r]);
                     resultVec.push_back(currentResultVec);
-                    if (currentResultVec == vector<int>({0,2,2,2}))
-                    {
-                        std::cout << "Reached result {0,2,2,2}" << std::endl;
-                    }
                     currentResultVec.pop_back(); // Free up space in current results vector for more possible combinations of the last two sum components
                     currentResultVec.pop_back();
                     ++l;
@@ -113,6 +119,12 @@ public:
                 if ((i==firstIndex) || ((i > firstIndex) && (nums[i]!=nums[i-1])))
                 {
                     currentResultVec.push_back(nums[i]);
+                    
+                    if (((target < 0) && (nums[i] > (target - int_min))) || ((target > 0) && (nums[i] < (target - int_max))))
+                    {
+                        return;
+                    }
+                    
                     Nsum(nums, target - nums[i], N-1, resultVec, currentResultVec, i+1); //i+1
                 }
             }
@@ -153,9 +165,13 @@ int main()
     //Input: nums = {-1,0,-5,-2,-2,-4,0,1,-2}, target = -9 | 278/292 | missing quad: [-5,-4,0,0]
     //Input: nums = {2,-4,-5,-2,-3,-5,0,4,-2}, target = -14 | 280/292 | missing quad: [-5,-5,-2,-2]
     //Input: nums = {0,2,2,2,10,-3,-9,2,-10,-4,-9,-2,2,8,7}, target = 6 | 285/292 | duplicate quad: [0,2,2,2]
-    vector<int> nums{0,2,2,2,10,-3,-9,2,-10,-4,-9,-2,2,8,7};     
-    int target = 6;
+    //Input: nums = { 1000000000, 1000000000, 1000000000, 1000000000}, target = -294967296 | 290/292 | signed integer overflow
+    //Input: nums = {-1000000000,-1000000000, 1000000000,-1000000000,-1000000000} , target = 294967296 | 292/292 | signed integer overflow
+    vector<int> nums{1000000000,1000000000,1000000000,1000000000};     
+    int target = -294967296;
 
+    cout << "INT MIN      = " << int_min << endl;
+    cout << "INT MAX      = " << int_max << endl;
     if (nums.size() < 200)
     {
         cout << "Input        : " << endl << nums << endl;
