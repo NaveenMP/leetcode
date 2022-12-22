@@ -92,13 +92,15 @@ public:
                     currentResultVec.pop_back(); // Free up space in current results vector for more possible combinations of the last two sum components
                     currentResultVec.pop_back();
                     ++l;            
-                    while (l < r && nums[l]==nums[l-1]){
+                    while (l < r && nums[l]==nums[l-1] && nums[l]!=nums[r]){
                             ++l;                      
                     }
                     --r;
-                    while (l < r && nums[r]==nums[r-1]){
+                    /*
+                    while (l < r && nums[r]==nums[r-1] && nums[l]!=nums[r]){
                             --r;
                     }
+                    */
                 }
             }
             currentResultVec.pop_back();
@@ -148,9 +150,10 @@ int main()
     //Input: nums = {-3,-1,0,2,4,5}, target = 2 | 186/292
     //Input: nums = {-2,-1,-1,1,1,2,2}, target = 0 | 215/292 
     //Input: nums = {-3,-2,-1,0,0,1,2,3}, target = 0 | 268/292 | missing quad: [-3,0,1,2]
-    //Input: nums = {[-1,0,-5,-2,-2,-4,0,1,-2]}, target = -9 | 278/292 | missing quad: [-5,-4,0,0]
-    vector<int> nums{-3,-2,-1,0,0,1,2,3};     
-    int target = 0;
+    //Input: nums = {-1,0,-5,-2,-2,-4,0,1,-2}, target = -9 | 278/292 | missing quad: [-5,-4,0,0]
+    //Input: nums = {2,-4,-5,-2,-3,-5,0,4,-2}, target = -14 | 280/292 | missing quad: [-5,-5,-2,-2]
+    vector<int> nums{2,-4,-5,-2,-3,-5,0,4,-2};     
+    int target = -14;
 
     if (nums.size() < 200)
     {
