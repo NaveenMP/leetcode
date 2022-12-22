@@ -24,12 +24,13 @@
 
 using namespace std;
 
-const int int_numbits = sizeof(int)*8;
-const int int_min = (1 << int_numbits-1);
-const int int_max = ~int_min;
-
 class Solution {
 public:
+
+    const int int_numbits = sizeof(int)*8;
+    const int int_min = (1 << int_numbits-1);
+    const int int_max = ~int_min;
+
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
 
         vector<vector<int>> resultVec;
@@ -99,7 +100,8 @@ public:
                     currentResultVec.push_back(nums[l]);
                     currentResultVec.push_back(nums[r]);
                     resultVec.push_back(currentResultVec);
-                    currentResultVec.pop_back(); // Free up space in current results vector for more possible combinations of the last two sum components
+                    // Free up space in current results vector for more possible combinations of the last two sum components
+                    currentResultVec.pop_back(); 
                     currentResultVec.pop_back();
                     ++l;
                     --r;            
