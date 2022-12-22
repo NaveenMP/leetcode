@@ -32,7 +32,7 @@ public:
         sort(nums.begin(), nums.end());
 
         vector<int> currentResultVec;
-        Nsum(nums, target, 4, resultVec, currentResultVec);
+        Nsum(nums, target, 4, resultVec, currentResultVec, 0);
 
         /*
         resultVec.reserve(resultSet.size());
@@ -44,7 +44,7 @@ public:
         return resultVec;
     }
 
-    void Nsum(vector<int>& nums, int target, unsigned N, vector<vector<int>>& resultVec, vector<int>& currentResultVec, int firstIndex = 0)
+    void Nsum(vector<int>& nums, int target, unsigned N, vector<vector<int>>& resultVec, vector<int>& currentResultVec, int firstIndex)
     {
 
         int numsLength = nums.size();
@@ -68,10 +68,9 @@ public:
                 {
                     currentResultVec.push_back(nums[l]);
                     currentResultVec.push_back(nums[r]);
-                    cout << "currentResultVec sz = " << currentResultVec.size() << endl;
                     resultVec.push_back(currentResultVec); 
                     currentResultVec.pop_back(); // Free up space in current results vector for more possible combinations of the last two sum components
-                    currentResultVec.pop_back();               
+                    currentResultVec.pop_back();             
                     while (l < r && nums[l]==nums[l-1]){
                             ++l;
                     }
@@ -82,7 +81,7 @@ public:
                     //--r;
                 }
             }
-            currentResultVec.clear();
+            currentResultVec.pop_back();
             return;
         }
         else
@@ -90,9 +89,9 @@ public:
             for(auto i=firstIndex; i < numsLength - (N - 2); ++i) // restrict search-space in the range (0, L - (N-1))
             {
                 currentResultVec.push_back(nums[i]);
-                Nsum(nums, target - nums[i], N-1, resultVec, currentResultVec, i+1);
-                //currentResultVec.clear();
-            } 
+                Nsum(nums, target - nums[i], N-1, resultVec, currentResultVec, i+1); //i+1
+            }
+            currentResultVec.clear(); 
         }
 
         return;
@@ -124,8 +123,8 @@ int main()
     //Input: nums = [1,0,-1,0,-2,2], target = 0 | Basic
     //Input: nums = [2,2,2,2,2], target = 8     | Basic 
     //Input: nums = {-3,-1,0,2,4,5}, target = 2 | 186/292
-    vector<int> nums{1,0,-1,0,-2,2};     //{1,0,-1,0,-2,2};
-    int target = 0;
+    vector<int> nums{-3,-1,0,2,4,5};     //{1,0,-1,0,-2,2};
+    int target = 2;
 
     if (nums.size() < 200)
     {
