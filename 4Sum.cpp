@@ -147,7 +147,8 @@ int main()
     //Input: nums = {2,2,2,2,2}, target = 8     | Basic 
     //Input: nums = {-3,-1,0,2,4,5}, target = 2 | 186/292
     //Input: nums = {-2,-1,-1,1,1,2,2}, target = 0 | 215/292 
-    //Input: nums = {-3,-2,-1,0,0,1,2,3}, target = 0 | 268/292 | missing solution: [-3,0,1,2]
+    //Input: nums = {-3,-2,-1,0,0,1,2,3}, target = 0 | 268/292 | missing quad: [-3,0,1,2]
+    //Input: nums = {[-1,0,-5,-2,-2,-4,0,1,-2]}, target = -9 | 278/292 | missing quad: [-5,-4,0,0]
     vector<int> nums{-3,-2,-1,0,0,1,2,3};     
     int target = 0;
 
