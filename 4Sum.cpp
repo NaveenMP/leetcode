@@ -54,10 +54,12 @@ public:
 
         int numsLength = nums.size();
 
+        /*
         if (any_of(nums.begin(), nums.end(), [&](int x){ return (x < int_min || x > int_max);} )) // move this condition outside function
         {
             return;
         }
+        */ 
         if ((target < int_min) || (target > int_max) || (target < N*nums[0]) || (target > N*nums[numsLength-1]) || (nums.size() < N))
         {
             return;
