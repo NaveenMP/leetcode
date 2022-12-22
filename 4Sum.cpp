@@ -54,7 +54,7 @@ public:
 
         int numsLength = nums.size();
 
-        /*
+        /* Not required as numbers causing sign-overflow cannot be used to create vector */
         if (any_of(nums.begin(), nums.end(), [&](int x){ return (x < int_min || x > int_max);} )) // move this condition outside function
         {
             return;
