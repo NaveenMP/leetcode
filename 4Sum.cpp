@@ -49,6 +49,23 @@ public:
 
         int numsLength = nums.size();
 
+        if (N < 2 || nums.size() < N)
+        {
+            return;
+            /* Enable for fully generalized Nsum
+            for (auto i=0; i<nums.size(); ++i)
+            {
+                if (target == nums[i])
+                {
+                    currentResultVec.push_back(nums[i]);
+                    resultVec.push_back(currentResultVec);
+                    return;
+                }
+            }
+            return;
+            */
+        }
+
         if (N==2)
         {
             int l(firstIndex),r(numsLength-1);
@@ -78,7 +95,7 @@ public:
                             --r;
                     }
                     ++l;
-                    //--r;
+                    --r;
                 }
             }
             currentResultVec.pop_back();
@@ -88,8 +105,11 @@ public:
         {
             for(auto i=firstIndex; i < numsLength - (N - 2); ++i) // restrict search-space in the range (0, L - (N-1))
             {
-                currentResultVec.push_back(nums[i]);
-                Nsum(nums, target - nums[i], N-1, resultVec, currentResultVec, i+1); //i+1
+                if ((i==firstIndex) || ((i > firstIndex) && (nums[i]!=nums[i-1])))
+                {
+                    currentResultVec.push_back(nums[i]);
+                    Nsum(nums, target - nums[i], N-1, resultVec, currentResultVec, i+1); //i+1
+                }
             }
             currentResultVec.clear(); 
         }
@@ -121,10 +141,11 @@ ostream& operator<<(ostream& os, const vector<int>& obj)
 int main()
 {
     //Input: nums = [1,0,-1,0,-2,2], target = 0 | Basic
-    //Input: nums = [2,2,2,2,2], target = 8     | Basic 
+    //Input: nums = {2,2,2,2,2}, target = 8     | Basic 
     //Input: nums = {-3,-1,0,2,4,5}, target = 2 | 186/292
-    vector<int> nums{-3,-1,0,2,4,5};     //{1,0,-1,0,-2,2};
-    int target = 2;
+    //Input: nums = {-2,-1,-1,1,1,2,2}, target = 0 | 215/292
+    vector<int> nums{0};     //{1,0,-1,0,-2,2};
+    int target = 0;
 
     if (nums.size() < 200)
     {
