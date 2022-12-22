@@ -54,7 +54,7 @@ public:
 
         int numsLength = nums.size();
 
-        if (any_of(nums.begin(), nums.end(), [](int x){ return (x < int_min || x > int_max);} )) // move thus condition outside function
+        if (any_of(nums.begin(), nums.end(), [&](int x){ return (x < int_min || x > int_max);} )) // move this condition outside function
         {
             return;
         }
@@ -172,13 +172,11 @@ int main()
     vector<int> nums{1000000000,1000000000,1000000000,1000000000};     
     int target = -294967296;
 
-    cout << "INT MIN      = " << int_min << endl;
-    cout << "INT MAX      = " << int_max << endl;
     if (nums.size() < 200)
     {
         cout << "Input        : " << endl << nums << endl;
-        sort(nums.begin(), nums.end());
-        cout << "Input sorted : " << endl << nums << endl;
+        //sort(nums.begin(), nums.end());
+        //cout << "Input sorted : " << endl << nums << endl;
     }
     const size_t inputSize(nums.size());
 
