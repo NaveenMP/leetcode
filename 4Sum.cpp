@@ -76,7 +76,7 @@ public:
                 if (sum < target)
                 {
                     ++l;
-                    while (l < r && nums[l]==nums[l-1]){
+                    while (l < r && nums[l]==nums[l-1] && nums[l]!=nums[r]){
                             ++l;
                     }
                 }
@@ -88,19 +88,19 @@ public:
                 {
                     currentResultVec.push_back(nums[l]);
                     currentResultVec.push_back(nums[r]);
-                    resultVec.push_back(currentResultVec); 
+                    resultVec.push_back(currentResultVec);
+                    if (currentResultVec == vector<int>({0,2,2,2}))
+                    {
+                        std::cout << "Reached result {0,2,2,2}" << std::endl;
+                    }
                     currentResultVec.pop_back(); // Free up space in current results vector for more possible combinations of the last two sum components
                     currentResultVec.pop_back();
-                    ++l;            
-                    while (l < r && nums[l]==nums[l-1] && nums[l]!=nums[r]){
+                    ++l;
+                    --r;            
+                    while (l < r && nums[l]==nums[l-1]){
                             ++l;                      
                     }
-                    --r;
-                    /*
-                    while (l < r && nums[r]==nums[r-1] && nums[l]!=nums[r]){
-                            --r;
-                    }
-                    */
+                    
                 }
             }
             currentResultVec.pop_back();
@@ -152,8 +152,9 @@ int main()
     //Input: nums = {-3,-2,-1,0,0,1,2,3}, target = 0 | 268/292 | missing quad: [-3,0,1,2]
     //Input: nums = {-1,0,-5,-2,-2,-4,0,1,-2}, target = -9 | 278/292 | missing quad: [-5,-4,0,0]
     //Input: nums = {2,-4,-5,-2,-3,-5,0,4,-2}, target = -14 | 280/292 | missing quad: [-5,-5,-2,-2]
-    vector<int> nums{2,-4,-5,-2,-3,-5,0,4,-2};     
-    int target = -14;
+    //Input: nums = {0,2,2,2,10,-3,-9,2,-10,-4,-9,-2,2,8,7}, target = 6 | 285/292 | duplicate quad: [0,2,2,2]
+    vector<int> nums{0,2,2,2,10,-3,-9,2,-10,-4,-9,-2,2,8,7};     
+    int target = 6;
 
     if (nums.size() < 200)
     {
