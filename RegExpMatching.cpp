@@ -135,7 +135,7 @@ int main()
     // Failed at test case 285/353 | s = "bbbba" p = ".*a*a"   ; Output: false Expected: true
 
     Solution S;
-    bool ret = S.isMatch("aaa", "ab*a*c*a");
+    bool ret = S.isMatch("bbbba", ".*a*a");
     cout << ret << endl;
     return 0;
 }
