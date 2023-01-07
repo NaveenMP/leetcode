@@ -24,16 +24,31 @@ public:
     bool isMatch(string s, string p)
     {
         size_t pos = 0;
-        while (p.length() > s.length()) // prune to match sizes
+        if (p.length() > s.length()) // prune to match sizes
         {
-            if (p[pos+1] == '*')
-                p[pos+1] = p[pos];
-
-            p.erase(pos,1);
-
-            if (s == p)
+            while (pos++ < p.length())
             {
-                return false;
+                if (p[pos] == '*' && s.find(p[pos-1]) > s.length())
+                {
+                    p.erase(pos-1,2);
+                }
+            }
+
+            pos = 0;
+            while(p.length() > s.length() )
+            {
+                if (p[pos] != s[pos])
+                {
+                    p.erase(pos,1);
+                }
+                else if (p[p.length()-1] != s[s.length()-1] && p[p.length()-1] != '*')
+                {
+                    p.erase(p.length()-1, 1);
+                }
+                else
+                {
+                    break;
+                }
             }
 
         }
@@ -94,14 +109,16 @@ int main()
                                 // mississp*.
                                 // mississpp.
                                 // mississppi
-    // Failed at test case 169/353 | s = "aab" p = "c*a*b" ; exp: true
+    // Failed at test case 169/353 | s = "aab" p = "c*a*b"   ; exp: true
 
-    // Failed at test case 275/353   | s = "aaa" p = "aaaa" ; Output: true Expected: false
+    // Failed at test case 275/353 | s = "aaa" p = "aaaa"    ; Output: true  Expected: false
 
-    // Failed at test case 277/353   | s = "aaa" p = "ab*ac*a";  Output: false Expected: true
+    // Failed at test case 277/353 | s = "aaa" p = "ab*ac*a" ; Output: false Expected: true
+
+    // Failed at test case 281/353 | s = "aaa" p = "ab*a*c*a"; Output: false Expected: true
 
     Solution S;
-    bool ret = S.isMatch("mississippi", "mis*is*p*.");
+    bool ret = S.isMatch("aaa", "ab*ac*a");
     cout << ret << endl;
     return 0;
 }
