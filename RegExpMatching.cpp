@@ -28,14 +28,15 @@ public:
         {
             while (pos++ < p.length())
             {
-                if (p[pos] == '*' && s.find(p[pos-1]) > s.length())
+                if ((p[pos] == '*') && (s.find(p[pos-1]) > s.length()))
                 {
                     p.erase(pos-1,2);
+                    pos = 0;
                 }
             }
 
             pos = 0;
-            while(p.length() > s.length() )
+            while(p.length() > s.length())
             {
                 if (p[pos] != s[pos])
                 {
@@ -48,6 +49,20 @@ public:
                 else
                 {
                     break;
+                }
+            }
+
+            size_t lDiff = 0;
+            while (p.length() > s.length() && (pos++ < s.length()))
+            {
+                if (p[pos] == '*' && (s.find(p[pos-1]) < s.length()))
+                {
+                    lDiff = s.length() - p.length();
+                    if (lDiff > 0)
+                    {
+                        p.erase(pos,1);
+                        pos = 0;
+                    }
                 }
             }
 
@@ -109,16 +124,18 @@ int main()
                                 // mississp*.
                                 // mississpp.
                                 // mississppi
-    // Failed at test case 169/353 | s = "aab" p = "c*a*b"   ; exp: true
+    // Failed at test case 169/353 | s = "aab"   p = "c*a*b"   ; exp: true
 
-    // Failed at test case 275/353 | s = "aaa" p = "aaaa"    ; Output: true  Expected: false
+    // Failed at test case 275/353 | s = "aaa"   p = "aaaa"    ; Output: true  Expected: false
 
-    // Failed at test case 277/353 | s = "aaa" p = "ab*ac*a" ; Output: false Expected: true
+    // Failed at test case 277/353 | s = "aaa"   p = "ab*ac*a" ; Output: false Expected: true
 
-    // Failed at test case 281/353 | s = "aaa" p = "ab*a*c*a"; Output: false Expected: true
+    // Failed at test case 281/353 | s = "aaa"   p = "ab*a*c*a"; Output: false Expected: true
+
+    // Failed at test case 285/353 | s = "bbbba" p = ".*a*a"   ; Output: false Expected: true
 
     Solution S;
-    bool ret = S.isMatch("aaa", "ab*ac*a");
+    bool ret = S.isMatch("aaa", "ab*a*c*a");
     cout << ret << endl;
     return 0;
 }
