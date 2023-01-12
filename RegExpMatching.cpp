@@ -104,6 +104,11 @@ public:
                     ++p_idx;
                     ++s_idx;
                 }
+                else
+                {
+                    p.erase(p_idx,1);
+                    continue;
+                }
             }
             else
             {
@@ -166,7 +171,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("aaa", "ab*a*c*a");
+    bool ret = S.isMatch("aaca", "ab*a*c*a");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
