@@ -46,6 +46,13 @@ public:
                     size_t p_substr_len = p_idx_next - (p_idx+2);
                     string p_substr = p.substr(p_idx+2, p_substr_len);
 
+                    if (p_substr == "")
+                    {
+                        p[p_idx] = s[s_idx];
+                        p.erase(p_idx+1,1);
+                        continue;
+                    }
+
                     // find index of first occurance of p_substr in s starting from s_idx.
                     size_t s_idx_match = 0; 
                     while (s.find(p_substr.c_str(), s_idx, p_substr_len) != string::npos)
@@ -171,7 +178,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("aaca", "ab*a*c*a");
+    bool ret = S.isMatch("a", ".*");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
