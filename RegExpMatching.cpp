@@ -88,7 +88,16 @@ public:
             }
             else if (p[p_idx] == '*')
             {
-
+                if (s[s_idx] == p[p_idx-1])
+                {
+                    if (s[s_idx+1] == s[s_idx])
+                        p.insert(p_idx, 1, p[p_idx-1]);
+                    else
+                        p[p_idx] = p[p_idx-1];
+                        
+                    ++p_idx;
+                    ++s_idx;
+                }
             }
         }
 
