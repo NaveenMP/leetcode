@@ -94,9 +94,16 @@ public:
                         p.insert(p_idx, 1, p[p_idx-1]);
                     else
                         p[p_idx] = p[p_idx-1];
-                        
+
                     ++p_idx;
                     ++s_idx;
+                }
+            }
+            else
+            {
+                if (p[p_idx+1] == '*')
+                {
+                    p.erase(p_idx,2);
                 }
             }
         }
@@ -153,7 +160,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("abcdede", "ab.*de");
+    bool ret = S.isMatch("aaa", "ab*ac*a");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
