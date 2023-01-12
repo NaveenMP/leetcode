@@ -26,7 +26,7 @@ public:
         size_t s_idx(0), p_idx(0);
         size_t s_len(s.length());// p_len(p.length());
 
-        while(p_idx < s_len-1)
+        while(p_idx < s_len)
         {
             if ((s[s_idx] == p[p_idx]) && (s_idx==p_idx))
             {
@@ -160,7 +160,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("aaa", "ab*ac*a");
+    bool ret = S.isMatch("aaa", "ab*a*c*a");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
