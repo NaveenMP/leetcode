@@ -26,9 +26,9 @@ public:
         size_t s_idx(0), p_idx(0);
         size_t s_len(s.length());// p_len(p.length());
 
-        while(p_idx < s_len)
+        while(p_idx < p.length())
         {
-            if ((s[s_idx] == p[p_idx]) && (s_idx==p_idx))
+            if ((s[s_idx] == p[p_idx]) && (s_idx==p_idx) && (p_idx <= s_idx))
             {
                 ++s_idx;
                 ++p_idx;
@@ -48,8 +48,15 @@ public:
 
                     if (p_substr == "")
                     {
-                        p[p_idx] = s[s_idx];
-                        p.erase(p_idx+1,1);
+                        if ((p_idx+1) < p.length()-1)
+                        {
+                            p.erase(p_idx,2);
+                        }
+                        else
+                        {
+                            p[p_idx] = s[s_idx];
+                            p.erase(p_idx+1,1);
+                        }
                         continue;
                     }
 
@@ -95,6 +102,15 @@ public:
             }
             else if (p[p_idx] == '*')
             {
+                if (p_idx >= s_len)
+                {
+                    if (p_idx - p.length() >= 1)
+                        p.erase(p_idx, 2);
+                    else
+                        p.erase(p_idx, 1);
+
+                    continue; 
+                }
                 if (s[s_idx] == p[p_idx-1])
                 {
                     if (s[s_idx+1] == s[s_idx]){
@@ -122,6 +138,10 @@ public:
                 if (p[p_idx+1] == '*')
                 {
                     p.erase(p_idx,2);
+                }
+                else
+                {
+                    ++p_idx;
                 }
             }
         }
@@ -178,7 +198,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("a", ".*");
+    bool ret = S.isMatch("abcdede", "ab.*de");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
