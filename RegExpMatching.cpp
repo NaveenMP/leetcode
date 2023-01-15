@@ -48,14 +48,28 @@ public:
 
                     if (p_substr == "")
                     {
-                        if ((p_idx+1) < p.length()-1)
+                        size_t p_dotBefChar_count(0);
+                        for (size_t i = p_idx+2; i < p.length(); ++i)
+                        {
+                            if (p[i] == '.')
+                                ++p_dotBefChar_count;
+                            else
+                                break;
+                        }
+                        if ((p_idx > s.length()-1) || (p_dotBefChar_count == (s_len - s_idx)))
                         {
                             p.erase(p_idx,2);
                         }
+                        else if ((p_idx+1) < p.length()-1 || (s_idx >= s.length()))
+                        {
+                            p.erase(p_idx,2);
+                            p.insert(p_idx, 1, s[s_idx]);
+                        }
                         else
                         {
-                            p[p_idx] = s[s_idx];
-                            p.erase(p_idx+1,1);
+                            p.insert(p_idx, 1, s[s_idx]);
+                            ++p_idx;
+                            ++s_idx;
                         }
                         continue;
                     }
@@ -111,26 +125,48 @@ public:
 
                     continue; 
                 }
-                if (s[s_idx] == p[p_idx-1])
-                {
-                    if (s[s_idx+1] == s[s_idx]){
-                        p.insert(p_idx, 1, p[p_idx-1]);
-                    }
-                    else{
-                        if (s_idx < s_len-1)
-                            p[p_idx] = p[p_idx-1];
-                        else{
-                            p.erase(p_idx,1);
-                            continue;
-                        }
-                    }
-                    ++p_idx;
-                    ++s_idx;
-                }
                 else
                 {
-                    p.erase(p_idx,1);
-                    continue;
+                    size_t p_char_reps(0), s_char_reps(0), diff_reps(0);
+                    for (size_t i = p_idx-1; i < p.length(); ++i)
+                    {
+                        if (p[i] == p[p_idx-1] && i!= p_idx)
+                           ++p_char_reps;
+                        else if (p[i] != p[p_idx-1] && i!= p_idx)
+                           break; 
+                    }
+                    for (size_t i = p_idx-1; i < s.length(); ++i)
+                    {
+                        if (s[i] == p[p_idx-1])
+                           ++s_char_reps;
+                        else if (s[i] != p[p_idx-1])
+                           break; 
+                    }
+
+                    size_t p_char_occur(0);
+                    for (size_t i = p_idx-1; i < p.length(); ++i)
+                    {
+                        if (p[i] == p[p_idx-1]){
+                            ++p_char_occur;
+                        }
+                        else{
+                            if ((p[i] != '*') && (p[i] != '.') && (p[i+1] != '*') && (p[i+1] != '.')) // search region for potential character repetitions ends when this condition is met
+                                break;
+                        }
+                    }
+
+                    if (p_char_reps > s_char_reps)
+                    {
+                        p.erase(p_idx-1,2);
+                    }
+                    else
+                    {
+                        diff_reps = s_char_reps - p_char_reps;
+                        p.erase(p_idx,1);
+                        if (diff_reps > 0 && (s_char_reps > p_char_occur))
+                            p.insert(p_idx, diff_reps, p[p_idx-1]);
+                    }
+
                 }
             }
             else
@@ -141,11 +177,13 @@ public:
                 }
                 else
                 {
-                    ++p_idx;
+                    break;
                 }
             }
         }
 
+        std::cout << "Input s    = " << s << std::endl;
+        std::cout << "Modified p = " << p << std::endl;
         if (s == p)
             return true;
         else
@@ -195,10 +233,23 @@ int main()
 
     // Failed at test case 180/353 | s = "abcdede" p = "ab.*de" ; Output: false Expected: true
 
+    // Failed for                  | s = "aa" p = "a*"          ; output false, expected: true
+
+    // Failed for                  | s = "ab" p = ".*"          ; output false, expected: true
+
+    // Failed for                  | s = "abbbcd" p = "ab*bbbcd"; Output false, Expected: true
+
+    // Failed for                  | s = "ba"     p = ".*."
+    // Failed for                  | s = "ab"     p = ".*"
+    // Failed for                  | s = "ab"     p = ".*.."
+    // Failed for                  | s = "ab"     p = ".*..c*"
+
+    // Failed for                  | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*"; Output true, Expectedfalse
+
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("abcdede", "ab.*de");
+    bool ret = S.isMatch("acaabbaccbbacaabbbb", "a*.*b*.*a*aa*a*.");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
@@ -207,3 +258,39 @@ int main()
     cout << "Elapsed time : " << elapsedMilliSecs << "ms" << endl;
     return 0;
 }
+
+/*
+if (s[s_idx] == p[p_idx-1])
+{
+    if (s[s_idx+1] == s[s_idx])
+    {
+        p.insert(p_idx, 1, p[p_idx-1]);
+    }
+    else
+    {
+        if (s_idx < s_len - 1)
+        {
+            p[p_idx] = p[p_idx-1];
+        }
+        else
+        {
+            if ((p_idx == s_idx) && (p_idx == p.length()-1))
+            {
+                p[p_idx] = p[p_idx -1];
+            }
+            else
+            {
+                p.erase(p_idx,1);
+                continue;
+            }
+        }
+    }
+    ++p_idx;
+    ++s_idx;
+}
+else
+{
+    p.erase(p_idx,1);
+    continue;
+}
+*/
