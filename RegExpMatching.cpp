@@ -24,7 +24,20 @@ public:
     bool isMatch(string s, string p)
     {
         size_t s_idx(0), p_idx(0);
-        size_t s_len(s.length());// p_len(p.length());
+        size_t s_len(s.length()), p_len(p.length()); // NOTE: p_len will keep changing as we build the pattern towards input string and must be re-calculated
+
+        // Quick check to find if end of pattern string can never be matched with end of input string
+        if (p.length()>=3 && s.length()>=1){
+            if (!((p.back()==s.back()) || (p.back()=='.') 
+                || (p[p_len-2]==s.back() && p.back()=='*') 
+                || (p[p_len-2]=='.' && p.back()=='*') 
+                || (p[p_len-2]=='*' && p.back()=='*')
+                || (p[p_len-3]==s.back() && p[p_len-2]!=s.back() && p.back()=='*')
+                || (p[p_len-3]=='.' && p[p_len-2]!=s.back() && p.back()=='*'))
+                ){        
+                    return false;
+                }
+        }
 
         while(p_idx < p.length())
         {
@@ -87,8 +100,8 @@ public:
                             s_idx += diff;
                         } 
                         else
-                        {
-                            if (s.find(p_substr.c_str(), s_idx+p_substr_len, p_substr_len) != string::npos) // check if another match to p_substr is found right after first match
+                        {                
+                            if (s.substr(s_idx+p_substr_len, p_substr_len).find(p_substr, 0) != string::npos)  // check if another match to p_substr is found right after first match
                             {
                                 if ((countNonSpecial(s, s_idx) - countNonSpecial(p, p_idx)) < p_substr_len)
                                 {
@@ -171,9 +184,12 @@ public:
             }
             else
             {
-                if (p[p_idx+1] == '*')
+                if (p_idx < p.length()-1)
                 {
-                    p.erase(p_idx,2);
+                    if ((p[p_idx+1] == '*')) 
+                        p.erase(p_idx,2);
+                    else
+                        break;
                 }
                 else
                 {
@@ -182,8 +198,8 @@ public:
             }
         }
 
-        std::cout << "Input s    = " << s << std::endl;
-        std::cout << "Modified p = " << p << std::endl;
+        //std::cout << "Input s    = " << s << std::endl;
+        //std::cout << "Modified p = " << p << std::endl;
         if (s == p)
             return true;
         else
@@ -244,12 +260,14 @@ int main()
     // Failed for                  | s = "ab"     p = ".*.."
     // Failed for                  | s = "ab"     p = ".*..c*"
 
-    // Failed for                  | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*"; Output true, Expectedfalse
+    // Failed for                  | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*"; Output true, Expected false => check also for s = "abcdede" p = "ab.*de"
+    // Failed for                  | s = "a" p = "ab*"; Output false, Expected true
+    // Failed for                  | s = "ab" p = ".*..c*"; output false, Expected true
 
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("acaabbaccbbacaabbbb", "a*.*b*.*a*aa*a*.");
+    bool ret = S.isMatch("a", "b");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
