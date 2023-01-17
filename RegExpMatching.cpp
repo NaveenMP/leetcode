@@ -95,7 +95,8 @@ public:
                         else if ((p_idx+1) < p.length()-1 || (s_idx >= s.length()))
                         {
                             p.erase(p_idx,2);
-                            p.insert(p_idx, 1, s[s_idx]);
+                            if (p.length() < s_len)
+                                p.insert(p_idx, 1, s[s_idx]);
                         }
                         else
                         {
@@ -286,7 +287,7 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("aabcbcbcaccbcaabc", ".*a*aa*.*b*.c*.*a*");
+    bool ret = S.isMatch("ab", ".*..c*");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
