@@ -41,7 +41,7 @@ public:
         }
 
         // Chip away at the end of pattern string p till it becomes the last character of input string s or something that will reduce to the last character of s
-        while(!((p.back() == s.back()) || (p[p.length()-2]==s.back() && p.back()=='*') || ((p[p.length()-2]=='.' && p.back()=='*'))))
+        while(!patternBackMatch(s, p))
         {
             if (p.back()=='.')
             {
@@ -238,6 +238,28 @@ public:
         }
         return count;
     }
+
+    bool patternBackMatch(const string &inputString, const string &patternString)
+    {
+        const size_t p_length = patternString.length();
+        const size_t s_length = inputString.length();
+        if (!(patternString.back() == inputString.back()))
+        {
+            if (p_length >= 2)
+            {
+                if ((patternString[p_length-2]==inputString.back() && inputString.back()=='*') || (inputString[s_length-2]=='.' && inputString.back()=='*'))
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                false;
+            }
+        }
+
+        return true; 
+    }
 };
 
 int main()
@@ -284,6 +306,7 @@ int main()
     // Failed for                  | s = "a" p = "ab*"; Output false, Expected true
     // Failed for                  | s = "ab" p = ".*..c*"; output false, Expected true
     // Failed for                  | s = "aabcbcbcaccbcaabc" p = ".*a*aa*.*b*.c*.*a*"; Output false, Expected true
+    // Failed for                  | s = "aa" p = "."
 
     Solution S;
     clock_t start = clock();
