@@ -264,53 +264,39 @@ public:
 
 int main()
 {
-    // Failed at 160/353 |    s = "mississippi" p = "mis*is*p*."; Output: true Expected: false
-                                // mississippi
-                                // mis*is*p*.
-                                // missis*p*.
-                                // mississp*.
-                                // mississpp.
-                                // mississppi
-    // Failed at test case 169/353 | s = "aab"   p = "c*a*b"    ; exp: true
-
-    // Failed at test case 275/353 | s = "aaa"   p = "aaaa"     ; Output: true  Expected: false
-
-    // Failed at test case 277/353 | s = "aaa"   p = "ab*ac*a"  ; Output: false Expected: true
-
-    // Failed at test case 280/353 | s = "aaca"  p = "ab*a*c*a" ; Output: false Expected: true (detected after 285/353)
-
-    // Failed at test case 281/353 | s = "aaa"   p = "ab*a*c*a" ; Output: false Expected: true
-
-    // Failed at test case 284/353 | s = "a"     p =".*"        ; Output: false Expected: true
-
-    // Failed at test case 285/353 | s = "bbbba" p = ".*a*a"    ; Output: false Expected: true
-
-    // Failed at test case 285/353 | s = "a"     p =".*..a*"    ; Output: true  Expected: false
-
-    // 285 / 353 testcases passed  | s = "aasdfasdfasdfasdfas" p = "aasdf.*asdf.*asdf.*asdf.*s" Output false Expected true
-
-    // Failed at test case 180/353 | s = "abcdede" p = "ab.*de" ; Output: false Expected: true
-
-    // Failed for                  | s = "aa" p = "a*"          ; output false, expected: true
-
-    // Failed for                  | s = "ab" p = ".*"          ; output false, expected: true
-
-    // Failed for                  | s = "abbbcd" p = "ab*bbbcd"; Output false, Expected: true
-
-    // Failed for                  | s = "ba"     p = ".*."
-    // Failed for                  | s = "ab"     p = ".*"
-    // Failed for                  | s = "ab"     p = ".*.."
-    // Failed for                  | s = "ab"     p = ".*..c*"
-
-    // Failed for                  | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*"; Output true, Expected false => check also for s = "abcdede" p = "ab.*de"
-    // Failed for                  | s = "a" p = "ab*"; Output false, Expected true
-    // Failed for                  | s = "ab" p = ".*..c*"; output false, Expected true
-    // Failed for                  | s = "aabcbcbcaccbcaabc" p = ".*a*aa*.*b*.c*.*a*"; Output false, Expected true
-    // Failed for                  | s = "aa" p = "."
+    // TEST Log
+    /*
+     Failed at 160/353 |    s = "mississippi" p = "mis*is*p*."; Output: true Expected: false
+                                // mississippi => mis*is*p*. => missis*p*. => mississp*. => mississpp. => mississppi
+     Failed at test case 169/353 | s = "aab"   p = "c*a*b"    ; exp: true
+     Failed at test case 275/353 | s = "aaa"   p = "aaaa"     ; Output: true  Expected: false
+     Failed at test case 277/353 | s = "aaa"   p = "ab*ac*a"  ; Output: false Expected: true
+     Failed at test case 280/353 | s = "aaca"  p = "ab*a*c*a" ; Output: false Expected: true (detected after 285/353)
+     Failed at test case 281/353 | s = "aaa"   p = "ab*a*c*a" ; Output: false Expected: true
+     Failed at test case 284/353 | s = "a"     p =".*"        ; Output: false Expected: true
+     Failed at test case 285/353 | s = "bbbba" p = ".*a*a"    ; Output: false Expected: true
+     Failed at test case 285/353 | s = "a"     p =".*..a*"    ; Output: true  Expected: false
+     285 / 353 testcases passed  | s = "aasdfasdfasdfasdfas" p = "aasdf.*asdf.*asdf.*asdf.*s" Output false Expected true
+     Failed at test case 180/353 | s = "abcdede" p = "ab.*de" ; Output: false Expected: true
+     Failed for                  | s = "aa" p = "a*"          ; output false, expected: true
+     Failed for                  | s = "ab" p = ".*"          ; output false, expected: true
+     Failed for                  | s = "abbbcd" p = "ab*bbbcd"; Output false, Expected: true
+     Failed for                  | s = "ba"     p = ".*."
+     Failed for                  | s = "ab"     p = ".*"
+     Failed for                  | s = "ab"     p = ".*.."
+     Failed for                  | s = "ab"     p = ".*..c*"
+     Failed for                  | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*"; Output true, Expected false => check also for s = "abcdede" p = "ab.*de"
+     Failed for                  | s = "a" p = "ab*"; Output false, Expected true
+     Failed for                  | s = "ab" p = ".*..c*"; output false, Expected true
+     Failed for                  | s = "aabcbcbcaccbcaabc" p = ".*a*aa*.*b*.c*.*a*"; Output false, Expected true
+     Failed for                  | s = "aa" p = "."
+     Failed for    (197/353)     | s = "abbabaaaaaaacaa"   p = "a*.*b.a.*c*b*a*c*" ; Output false, Expected true
+                                                                a*.*b.a.*c*b*a*c* => a.*b.a.*c*b*a* => a.*b.a.*c*a* => a.*b.a.*caa => abbab.a.*caa => abbabaa.*caa => "abbabaaaaaaacaa" 
+    */
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("ab", ".*..c*");
+    bool ret = S.isMatch("abbabaaaaaaacaa", "a*.*b.a.*c*b*a*c*");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
