@@ -55,6 +55,10 @@ public:
             {
                 p.erase(p.length()-1,1);
             }
+            else
+            {
+                break;
+            }
         }
 
         // Now process from start of pattern string p
@@ -247,14 +251,10 @@ public:
         {
             if (p_length >= 2)
             {
-                if ((patternString[p_length-2]==inputString.back() && inputString.back()=='*') || (inputString[s_length-2]=='.' && inputString.back()=='*'))
+                if ((patternString[p_length-2]==inputString.back() && inputString.back()=='*') || (patternString[p_length-2]=='.' && inputString.back()=='*'))
                     return true;
                 else
                     return false;
-            }
-            else
-            {
-                false;
             }
         }
 
