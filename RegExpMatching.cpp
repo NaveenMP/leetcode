@@ -33,12 +33,31 @@ public:
                 || (p[p_len-2]=='.' && p.back()=='*') 
                 || (p[p_len-2]=='*' && p.back()=='*')
                 || (p[p_len-3]==s.back() && p[p_len-2]!=s.back() && p.back()=='*')
-                || (p[p_len-3]=='.' && p[p_len-2]!=s.back() && p.back()=='*'))
+                || (p[p_len-3]=='.' && p[p_len-2]!=s.back() && p.back()=='*')
+                || (p[p_len-3]=='*' && p[p_len-2]!=s.back() && p.back()=='*'))
                 ){        
                     return false;
                 }
         }
 
+        // Chip away at the end of pattern string p till it becomes the last character of input string s or something that will reduce to the last character of s
+        while(!((p.back() == s.back()) || (p[p.length()-2]==s.back() && p.back()=='*') || ((p[p.length()-2]=='.' && p.back()=='*'))))
+        {
+            if (p.back()=='.')
+            {
+                p.back() = s.back();
+            }
+            else if (p.back()=='*' && p[p.length()-2]!='*' && p[p.length()-2]!='.' && p[p.length()-2]!=s.back())
+            {
+                p.erase(p.length()-2,2);
+            }
+            else if (p.back()=='*' && p[p.length()-2]=='*')
+            {
+                p.erase(p.length()-1,1);
+            }
+        }
+
+        // Now process from start of pattern string p
         while(p_idx < p.length())
         {
             if ((s[s_idx] == p[p_idx]) && (s_idx==p_idx) && (p_idx <= s_idx))
@@ -263,11 +282,11 @@ int main()
     // Failed for                  | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*"; Output true, Expected false => check also for s = "abcdede" p = "ab.*de"
     // Failed for                  | s = "a" p = "ab*"; Output false, Expected true
     // Failed for                  | s = "ab" p = ".*..c*"; output false, Expected true
-
+    // Failed for                  | s = "aabcbcbcaccbcaabc" p = ".*a*aa*.*b*.c*.*a*"; Output false, Expected true
 
     Solution S;
     clock_t start = clock();
-    bool ret = S.isMatch("a", "b");
+    bool ret = S.isMatch("aabcbcbcaccbcaabc", ".*a*aa*.*b*.c*.*a*");
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
     double elapsedMilliSecs = elapsedSecs*1000;
     cout << ret << endl;
