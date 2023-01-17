@@ -206,7 +206,7 @@ public:
             {
                 if (p_idx < p.length()-1)
                 {
-                    if ((p[p_idx+1] == '*')) 
+                    if (p[p_idx+1] == '*') 
                         p.erase(p_idx,2);
                     else
                         break;
