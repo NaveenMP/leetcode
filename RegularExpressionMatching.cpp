@@ -78,7 +78,15 @@ public:
                         if (p[p_idx+2] == '.')
                         {
                             p.erase(p_idx, 2);
-                            p[p_idx] = s[p_idx];
+                            if (p_idx+1 < p.length())
+                            {
+                                if (p[p_idx+1]=='*')
+                                    p.insert(p_idx, 1, s[p_idx]);
+                                else
+                                    p[p_idx] = s[p_idx];
+                            }
+                            else
+                                p[p_idx] = s[p_idx];
                         }
                         else if (p[p_idx+2] == '*')
                         {
@@ -251,12 +259,14 @@ int main()
      Failed for                  | s = "aa" p = "."
      Failed for    (197/353)     | s = "abbabaaaaaaacaa"   p = "a*.*b.a.*c*b*a*c*" ; Output false, Expected true
                                                                 a*.*b.a.*c*b*a*c* => a.*b.a.*c*b*a* => a.*b.a.*c*a* => a.*b.a.*caa => abbab.a.*caa => abbabaa.*caa => "abbabaaaaaaacaa" 
+    
+     Failed for    (152/353)     | s = "aba" p = ".*.*"; Output false,  Expected true
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "ab";
-    string p = ".*..c*";
+    string s = "aba";
+    string p = ".*.*";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
