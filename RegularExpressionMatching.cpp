@@ -43,9 +43,14 @@ public:
         // Chip away at the end of pattern string p till it becomes the last character of input string s or something that will reduce to the last character of s
         while(!patternBackMatch(s, p))
         {
+            if (p.find('*',0) == string::npos)
+            {
+              break;  
+            }
+
             if (p.back()!=s.back() && p.back()!='*' && p.back()!='.')
             {
-                p.erase(p.length()-1,1);
+                return false;
             }
             else if (p.back()=='.')
             {
@@ -62,6 +67,24 @@ public:
             else
             {
                 break;
+            }
+        }
+
+        size_t minLen = std::min(s.length(), p.length());
+
+        if (minLen > 0)
+        {
+            for (size_t i = 0; i < minLen-1; ++i)
+            {
+                if (p[p.length()-i] != '.' && p[p.length()-i] != '*')
+                {
+                    if (p[p.length()-i] != s[s.length()-i])
+                        return false;
+                }
+                else
+                {
+                    break;
+                }
             }
         }
 
@@ -267,12 +290,14 @@ int main()
      Failed for    (152/353)     | s = "aba" p = ".*.*"; Output false,  Expected true
 
      Failed for    (153/353)     | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*" ; Time limit exceeded
+     Failed for    (170/353)     | s = "a" p = ".b"; Output true Expected false
+     Failed for    (172/353)     | s = "caaaaccabcacbaac" p = "b*.*..*bba.*bc*a*bc" ; Time limit exceeded
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "acaabbaccbbacaabbbb";
-    string p = "a*.*b*.*a*aa*a*";
+    string s = "aa";
+    string p = "a";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
