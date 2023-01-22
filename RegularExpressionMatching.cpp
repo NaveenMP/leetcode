@@ -43,7 +43,11 @@ public:
         // Chip away at the end of pattern string p till it becomes the last character of input string s or something that will reduce to the last character of s
         while(!patternBackMatch(s, p))
         {
-            if (p.back()=='.')
+            if (p.back()!=s.back() && p.back()!='*' && p.back()!='.')
+            {
+                p.erase(p.length()-1,1);
+            }
+            else if (p.back()=='.')
             {
                 p.back() = s.back();
             }
@@ -216,7 +220,7 @@ public:
         {
             if (p_length >= 2)
             {
-                if ((patternString[p_length-2]==inputString.back() && inputString.back()=='*') || (patternString[p_length-2]=='.' && inputString.back()=='*'))
+                if ((patternString[p_length-2]==inputString.back() && patternString.back()=='*') || (patternString[p_length-2]=='.' && patternString.back()=='*'))
                     return true;
                 else
                     return false;
@@ -261,12 +265,14 @@ int main()
                                                                 a*.*b.a.*c*b*a*c* => a.*b.a.*c*b*a* => a.*b.a.*c*a* => a.*b.a.*caa => abbab.a.*caa => abbabaa.*caa => "abbabaaaaaaacaa" 
     
      Failed for    (152/353)     | s = "aba" p = ".*.*"; Output false,  Expected true
+
+     Failed for    (153/353)     | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*" ; Time limit exceeded
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "aba";
-    string p = ".*.*";
+    string s = "acaabbaccbbacaabbbb";
+    string p = "a*.*b*.*a*aa*a*";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
