@@ -126,6 +126,7 @@ public:
                             {                        
                                 if (s[i] == p[p_idx+2])
                                 {
+                                    //cout << "Match to match upto "<< s[i] << " at " << i  << endl;
                                     auto p_tmp = p;
                                     p_tmp.erase(p_idx, 2);
                                     p_tmp.insert(p_idx, s.substr(p_idx,i-p_idx));
@@ -138,6 +139,10 @@ public:
                                     if (isMatch(s_tmp_substr, p_tmp_substr))
                                     {
                                         return true;
+                                    }
+                                    else if(s.find_last_of(s[i]) == i)
+                                    {
+                                        return false;
                                     }
                                 }
                             }
@@ -292,12 +297,13 @@ int main()
      Failed for    (153/353)     | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*" ; Time limit exceeded
      Failed for    (170/353)     | s = "a" p = ".b"; Output true Expected false
      Failed for    (172/353)     | s = "caaaaccabcacbaac" p = "b*.*..*bba.*bc*a*bc" ; Time limit exceeded
+     Faled  for    (177/353)     | s = "baaabaacaacaacbca" p = "b*c*c*.*.*bba*b*"   ; Time limit exceeded
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "aa";
-    string p = "a";
+    string s = "acaabbaccbbacaabbbb";
+    string p = "a*.*b*.*a*aa*a*";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
