@@ -74,16 +74,47 @@ public:
 
         if (minLen > 0)
         {
-            for (size_t i = 0; i < minLen-1; ++i)
+            size_t i = 0;
+            while (i <= minLen-1)
             {
-                if (p[p.length()-i] != '.' && p[p.length()-i] != '*')
+                if (p[p.length()-1-i] != '.' && p[p.length()-1-i] != '*')
                 {
-                    if (p[p.length()-i] != s[s.length()-i])
+                    if (p[p.length()-1-i] != s[s.length()-1-i])
                         return false;
+                    else
+                        ++i;
                 }
-                else
+                else if (p[p.length()-1-i] == '.')
                 {
-                    break;
+                    p[p.length()-1-i] = s[s.length()-1-i];
+                    i++;
+                }
+                else if (p[p.length()-1-i] == '*')
+                {
+                    char pprev = p[p.length()-1-(i+1)];
+                    char scurr = s[s.length()-1-i];
+                    if ((p.length()-1-(i+1)) >= 0)
+                    {
+                        if (p[p.length()-1-(i+1)] == '.')
+                        {
+                            break;
+                        }
+                        else if(p[p.length()-1-(i+1)] == '*')
+                        {
+                            p.erase(p.length()-1-(i+1),1);
+                        }
+                        else
+                        {
+                            p.erase(p.length()-1-(i+1),2);
+                            if (p[p.length()-1-(i+1)] == s[s.length()-1-i])
+                            {
+                                size_t charRecurrance = countCharReccurance(s, s[s.length()-1-i], s.length()-1-i, true);
+                                if (charRecurrance > 0)
+                                    p.insert(p.length()-1-(i+1),charRecurrance,s[s.length()-1-i]);
+                                ++i;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -258,6 +289,44 @@ public:
         return true; 
     }
 
+    size_t countCharReccurance(const string Str, const char Ch, const size_t start_idx, bool revDirection = false)
+    {
+        size_t count = 0;
+        if (Str[start_idx] == Ch)
+            count++;
+        else
+            return count;
+
+        int idx = start_idx;
+        if (revDirection)
+        {
+            if (idx > 0 && idx <= int(Str.length()-1))
+            {
+                while(Str[--idx] == Ch)
+                {
+                    ++count;
+                    if (idx == 0)
+                        break;
+                }
+            }
+        }
+        else
+        {
+            if (idx >= 0 && idx < int(Str.length()-1))
+            {
+                while(Str[++idx] == Ch)
+                {
+                    ++count;
+                    if (idx == Str.length()-1)
+                        break;
+                }
+            }
+        }
+
+        return count;
+
+    }
+
     string modifiedPattern;
 };
 
@@ -297,13 +366,14 @@ int main()
      Failed for    (153/353)     | s = "acaabbaccbbacaabbbb" p = "a*.*b*.*a*aa*a*" ; Time limit exceeded
      Failed for    (170/353)     | s = "a" p = ".b"; Output true Expected false
      Failed for    (172/353)     | s = "caaaaccabcacbaac" p = "b*.*..*bba.*bc*a*bc" ; Time limit exceeded
-     Faled  for    (177/353)     | s = "baaabaacaacaacbca" p = "b*c*c*.*.*bba*b*"   ; Time limit exceeded
+     Failed  for    (177/353)    | s = "baaabaacaacaacbca" p = "b*c*c*.*.*bba*b*"   ; Time limit exceeded
+     Failed for (205/353)        | s = "abbaaaabaabbcba" p = "a*.*ba.*c*..a*.a*." ; Time limit exceeded
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "acaabbaccbbacaabbbb";
-    string p = "a*.*b*.*a*aa*a*";
+    string s = "abbaaaabaabbcba";
+    string p = "a*.*ba.*c*..a*.a*.";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
