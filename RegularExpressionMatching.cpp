@@ -297,10 +297,10 @@ public:
         else
             return count;
 
-        int idx = start_idx;
+        size_t idx = start_idx;
         if (revDirection)
         {
-            if (idx > 0 && idx <= int(Str.length()-1))
+            if (idx > 0 && idx <= (Str.length()-1))
             {
                 while(Str[--idx] == Ch)
                 {
@@ -312,7 +312,7 @@ public:
         }
         else
         {
-            if (idx >= 0 && idx < int(Str.length()-1))
+            if (idx >= 0 && idx < (Str.length()-1))
             {
                 while(Str[++idx] == Ch)
                 {
@@ -368,12 +368,14 @@ int main()
      Failed for    (172/353)     | s = "caaaaccabcacbaac" p = "b*.*..*bba.*bc*a*bc" ; Time limit exceeded
      Failed  for    (177/353)    | s = "baaabaacaacaacbca" p = "b*c*c*.*.*bba*b*"   ; Time limit exceeded
      Failed for (205/353)        | s = "abbaaaabaabbcba" p = "a*.*ba.*c*..a*.a*." ; Time limit exceeded
+     Failed for                  | s = "abcd" p = "d*"
+     Failed for (240/353)        | s = "aaa"  p = "ab*a*c*a" ; Output false Expected true
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "abbaaaabaabbcba";
-    string p = "a*.*ba.*c*..a*.a*.";
+    string s = "aa";
+    string p = "a";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
