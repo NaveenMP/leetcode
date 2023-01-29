@@ -199,7 +199,7 @@ public:
                     if (p_idx - p.length() >= 1)
                         p.erase(p_idx, 2);
                     else
-                        p.erase(p_idx, 1);
+                        p.erase(p_idx,, false, 1000});
 
                     continue; 
                 }
@@ -330,7 +330,64 @@ public:
     string modifiedPattern;
 };
 
-int main()
+TEST()
+{
+    struct testCase
+    {
+        string inputString;
+        string patternString;
+        bool output;
+        bool expected;
+        bool result;
+        bool executionTime;
+    };
+
+    vector<testCase> testCases;
+    testCases.push_back({"mississippi"          ,"mis*is*p*."                , false, false , false, 1000}); //1
+    testCases.push_back({"aab"                  ,"c*a*b"                     , false, true  , false, 1000});
+    testCases.push_back({"aaa"                  ,"aaaa"                      , false, false , false, 1000});
+    testCases.push_back({"aaa"                  ,"ab*ac*a"                   , false, true  , false, 1000});
+    testCases.push_back({"aaca"                 ,"ab*a*c*a"                  , false, true  , false, 1000});
+    testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000});
+    testCases.push_back({"a"                    ,".*"                        , false, true  , false, 1000}); //7
+    testCases.push_back({"aasdfasdfasdfasdfas"  ,"aasdf.*asdf.*asdf.*asdf.*s", false, true  , false, 1000});
+    testCases.push_back({"abcdede"              ,"ab.*de"                    , false, true  , false, 1000});
+    testCases.push_back({"aa"                   ,"a*",                       , false, true  , false, 1000});
+    testCases.push_back({"ab"                   ,".*",                       , false, true  , false, 1000});
+    testCases.push_back({"abbbcd"               ,"ab*bbbcd",                 , false, true  , false, 1000});
+    testCases.push_back({"ba"                   ,".*.",                      , false, true  , false, 1000});
+    testCases.push_back({"ab"                   ,".*",                       , false, true  , false, 1000});
+    testCases.push_back({"ab"                   ,".*..",                     , false, true  , false, 1000});
+    testCases.push_back({"ab"                   ,".*..c*",                   , false, true  , false, 1000}); //16
+    testCases.push_back({"acaabbaccbbacaabbbb"  ,"a*.*b*.*a*aa*a*"           , false, false , false, 1000});
+    testCases.push_back({"a"                    ,"ab*"                       , false, true  , false, 1000});
+    testCases.push_back({"aabcbcbcaccbcaabc"    ,".*a*aa*.*b*.c*.*a*"        , false, true  , false, 1000});
+    testCases.push_back({"abbabaaaaaaacaa"      ,"a*.*b.a.*c*b*a*c*"         , false, true  , false, 1000}); //20
+    testCases.push_back({"aba"                  ,".*.*"                      , false, true  , false, 1000});
+    testCases.push_back({"acaabbaccbbacaabbbb"  ,"a*.*b*.*a*aa*a*"           , false, false , false, 1000});
+    testCases.push_back({"a"                    ,".b"                        , false, false , false, 1000});
+    testCases.push_back({"caaaaccabcacbaac"     ,"b*.*..*bba.*bc*a*bc"       , false, false , false, 1000});
+    testCases.push_back({"baaabaacaacaacbca"    ,"b*c*c*.*.*bba*b*"          , false, false , false, 1000});
+    testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000});
+    testCases.push_back({"abcd"                 ,"d*"                        , false, false , false, 1000});
+    testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000}); // 28
+
+    for (auto testCase:testCases)
+    {
+        Solution S;
+        clock_t start = clock();
+        string s = testCase.inputString;
+        string p = testCase.patternString;
+        testCase.output = S.isMatch(s, p);
+        testCase.result = (testCase.output == testCase.expected) true: false;
+        double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
+        double elapsedMilliSecs = elapsedSecs*1000;
+        testCase.executionTime = elapsedMilliSecs;
+    }
+
+}
+
+int main() 
 {
     // TEST Log
     /*
