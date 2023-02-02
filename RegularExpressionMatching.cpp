@@ -75,7 +75,7 @@ public:
         }
 
         size_t minLen = std::min(s.length(), p.length());
-
+        /*
         if (minLen > 0)
         {
             size_t i = 0;
@@ -122,6 +122,7 @@ public:
                 }
             }
         }
+        */
 
         // Now process from start of pattern string p
         while(p_idx < p.length())
@@ -376,49 +377,66 @@ void TEST(bool printAll = false)
     testCases.push_back({"abcd"                 ,"d*"                        , false, false , false, 1000.0});
     testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); // 28
 
+    size_t maxSlength(0), maxPlength(0);
+    for (auto testCase:testCases)
+    {
+        maxSlength = ((testCase.inputString.size() > maxSlength)?testCase.inputString.size():maxSlength);
+        maxPlength = ((testCase.patternString.size() > maxPlength)?testCase.patternString.size():maxPlength); 
+    }
+    maxSlength += 4;
+    maxPlength += 4;
+
     size_t testCaseNumber(0);
     for (auto testCase:testCases)
     {
         bool isTimeout(false);
-        /*
-        std::thread([](bool &isTimeout){
-        std::this_thread::sleep_for(1000ms); 
-        isTimeout = true;
-        }).detach();
-        */
+
+        std::thread timeoutThread([&]()
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            isTimeout = true;
+        });
 
         Solution S;
         clock_t start = clock();
         string s = testCase.inputString;
         string p = testCase.patternString;
         testCase.output = S.isMatch(s, p);
+
+        timeoutThread.join();
         
-        testCase.result = (testCase.output == testCase.expected);
-        double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
-        double elapsedMilliSecs = elapsedSecs*1000;
-        testCase.executionTime = elapsedMilliSecs;
+        if (!isTimeout){
+            testCase.result = (testCase.output == testCase.expected);
+            double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
+            double elapsedMilliSecs = elapsedSecs*1000;
+            testCase.executionTime = elapsedMilliSecs;
+        }
 
         ++testCaseNumber;
 
-
+        size_t sSpacing = maxSlength - testCase.inputString.size();
+        size_t pSpacing = maxPlength - testCase.patternString.size();
         if (!testCase.result || isTimeout)
         {
             cout << "Test case " << testCaseNumber << "/" << testCases.size() << " : " 
-                 << " s = " << testCase.inputString << ", p = " << testCase.patternString;
+                 << " s = " << testCase.inputString << string(sSpacing,' ') << ", p = " << testCase.patternString << string(pSpacing,' ');
             if (!testCase.result) 
                 cout << ", Output = " << testCase.output << ", Expected = " << testCase.expected << "; FAILURE !!!" << endl;
-            else if (isTimeout)
+            else if (isTimeout){
+                timeoutThread.join();
                 cout << "Time Limit Exceeded !!! " << endl;
+            }
         }
         else
         {
             if (printAll)
             {
                 cout << "Test case " << testCaseNumber << "/" << testCases.size() << " : " 
-                 << " s = " << testCase.inputString << ", p = " << testCase.patternString
+                 << " s = " << testCase.inputString << string(sSpacing,' ') << ", p = " << testCase.patternString << string(pSpacing,' ')
                  << ", Output = " << testCase.output << ", Expected = " << testCase.expected << "; PASS" << endl;
             }
         }
+
     }
 
     return;
