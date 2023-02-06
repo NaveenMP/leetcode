@@ -124,6 +124,11 @@ public:
                     {
                         if (p[p.length()-1-(i+1)] == '.')
                         {
+                            if ((p.length()-1-(i+3)) >= 0 && (p.length()-1-(i+3)) <= (p.length()-1))
+                            {
+                                if (p[p.length()-1-(i+2)] == '*' && p[p.length()-1-(i+3)] == '.')
+                                    p.erase(p.length()-1-(i+1),2);
+                            }
                             break;
                         }
                         else if(p[p.length()-1-(i+1)] == '*')
@@ -416,6 +421,7 @@ void TEST(bool printAll = false)
     testCases.push_back({"abcd"                 ,"d*"                        , false, false , false, 1000.0});
     testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); 
     testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0}); //29
+    testCases.push_back({"bbcacbabbcbaaccabc"   ,"b*a*a*.c*bb*b*.*.*"        , false, true  , false, 1000.0}); //30
 
     size_t maxSlength(0), maxPlength(0);
     for (auto testCase:testCases)
@@ -493,14 +499,17 @@ int main()
 {
     // TEST Log
     /*
-        s = "aaa" p = "ab*a" | Line 1061: Char 9: runtime error: addition of unsigned offset to 0x7fff92e7b7c0 overflowed to 0x7fff92e7b7bf (basic_string.h)
-                               SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/basic_string.h:1070:9
+        s = "bbcacbabbcbaaccabc" p = "b*a*a*.c*bb*b*.*.*", Output false, Expected true | 242 / 353 testcases passed
+                                      .c*bb*b*.*.*
+                                      bbb*b*.*.*
+                                      bb.*.*
+                                      bbcacbabbcbaaccabc
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "aaa";
-    string p = "ab*a";
+    string s = "bbcacbabbcbaaccab";
+    string p = "b*a*a*.c*bb*b*.*.*";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
