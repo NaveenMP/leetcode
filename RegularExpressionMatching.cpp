@@ -4,9 +4,24 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <atomic>
+#include <future>
+#include <mutex>
 
 using namespace std;
 using namespace std::literals::chrono_literals;
+
+std::mutex mtx;
+std::condition_variable cv;
+bool isTimeout = false;
+
+void timeoutChecker(int timeoutDuration) {
+    std::unique_lock<std::mutex> lck(mtx);
+    if (cv.wait_for(lck, std::chrono::seconds(timeoutDuration)) == std::cv_status::timeout) {
+        isTimeout = true;
+        std::cout << "Timeout reached" << std::endl;
+    }
+}
 
 /*
  *
@@ -75,28 +90,31 @@ public:
         }
 
         size_t minLen = std::min(s.length(), p.length());
-        /*
-        if (minLen > 0)
+        
+        if (minLen > 0 && !finishedPreprocessing)
         {
             size_t i = 0;
+            size_t j = i;
             while (i <= minLen-1)
             {
                 if (p[p.length()-1-i] != '.' && p[p.length()-1-i] != '*')
                 {
-                    if (p[p.length()-1-i] != s[s.length()-1-i])
+                    if (p[p.length()-1-i] != s[s.length()-1-j])
                         return false;
                     else
                         ++i;
+                        ++j;
                 }
                 else if (p[p.length()-1-i] == '.')
                 {
-                    p[p.length()-1-i] = s[s.length()-1-i];
-                    i++;
+                    p[p.length()-1-i] = s[s.length()-1-j];
+                    ++i;
+                    ++j;
                 }
                 else if (p[p.length()-1-i] == '*')
                 {
                     char pprev = p[p.length()-1-(i+1)];
-                    char scurr = s[s.length()-1-i];
+                    char scurr = s[s.length()-1-j];
                     if ((p.length()-1-(i+1)) >= 0)
                     {
                         if (p[p.length()-1-(i+1)] == '.')
@@ -109,20 +127,35 @@ public:
                         }
                         else
                         {
+                            /* 
                             p.erase(p.length()-1-(i+1),2);
-                            if (p[p.length()-1-(i+1)] == s[s.length()-1-i])
+                            if (p[p.length()-1-(i+1)] == s[s.length()-1-j])
                             {
                                 size_t charRecurrance = countCharReccurance(s, s[s.length()-1-i], s.length()-1-i, true);
                                 if (charRecurrance > 0)
                                     p.insert(p.length()-1-(i+1),charRecurrance,s[s.length()-1-i]);
                                 ++i;
                             }
+                            */
+                            if (p[p.length()-1-(i+1)] == s[s.length()-1-j])
+                            {
+                                size_t charRecurrance = countCharReccurance(s, s[s.length()-1-j], s.length()-1-j, true);
+                                if (charRecurrance > 0)
+                                    j += charRecurrance;
+                                i+=2;
+                            }
+                            else
+                            {
+                               p.erase(p.length()-1-(i+1),2); 
+                            }
+
                         }
                     }
                 }
             }
+
+            finishedPreprocessing = true;
         }
-        */
 
         // Now process from start of pattern string p
         while(p_idx < p.length())
@@ -332,6 +365,7 @@ public:
 
     }
 
+    bool finishedPreprocessing = false;
     string modifiedPattern;
 };
 
@@ -373,9 +407,9 @@ void TEST(bool printAll = false)
     testCases.push_back({"a"                    ,".b"                        , false, false , false, 1000.0});
     testCases.push_back({"caaaaccabcacbaac"     ,"b*.*..*bba.*bc*a*bc"       , false, false , false, 1000.0});
     testCases.push_back({"baaabaacaacaacbca"    ,"b*c*c*.*.*bba*b*"          , false, false , false, 1000.0});
-    testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0});
     testCases.push_back({"abcd"                 ,"d*"                        , false, false , false, 1000.0});
-    testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); // 28
+    testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); 
+    testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0}); //28
 
     size_t maxSlength(0), maxPlength(0);
     for (auto testCase:testCases)
@@ -389,25 +423,27 @@ void TEST(bool printAll = false)
     size_t testCaseNumber(0);
     for (auto testCase:testCases)
     {
-        bool isTimeout(false);
+        isTimeout = false;
+        //auto start = std::chrono::steady_clock::now();
+        //std::thread timeoutThread(timeoutChecker, 2);
 
-        std::thread timeoutThread([&]()
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            isTimeout = true;
-        });
 
         Solution S;
-        clock_t start = clock();
+        clock_t startFunc = clock();
         string s = testCase.inputString;
         string p = testCase.patternString;
         testCase.output = S.isMatch(s, p);
-
+        /*
+        isTimeout = true;
+        cv.notify_all();
         timeoutThread.join();
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> diff = end - start;
+        */
         
         if (!isTimeout){
             testCase.result = (testCase.output == testCase.expected);
-            double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
+            double elapsedSecs = (clock() - startFunc) / ((double)CLOCKS_PER_SEC);
             double elapsedMilliSecs = elapsedSecs*1000;
             testCase.executionTime = elapsedMilliSecs;
         }
@@ -420,15 +456,15 @@ void TEST(bool printAll = false)
         {
             cout << "Test case " << testCaseNumber << "/" << testCases.size() << " : " 
                  << " s = " << testCase.inputString << string(sSpacing,' ') << ", p = " << testCase.patternString << string(pSpacing,' ');
-            if (!testCase.result) 
+            if (!testCase.result){ 
                 cout << ", Output = " << testCase.output << ", Expected = " << testCase.expected << "; FAILURE !!!" << endl;
+            }
             else if (isTimeout){
-                timeoutThread.join();
                 cout << "Time Limit Exceeded !!! " << endl;
             }
         }
         else
-        {
+        {           
             if (printAll)
             {
                 cout << "Test case " << testCaseNumber << "/" << testCases.size() << " : " 
@@ -487,8 +523,8 @@ int main()
 
     Solution S;
     clock_t start = clock();
-    string s = "aa";
-    string p = "a";
+    string s = "abbaaaabaabbcba";
+    string p = "a*.*ba.*c*..a*.a*.";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
