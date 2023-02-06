@@ -9,6 +9,7 @@
 #include <mutex>
 
 using namespace std;
+/*
 using namespace std::literals::chrono_literals;
 
 std::mutex mtx;
@@ -22,6 +23,7 @@ void timeoutChecker(int timeoutDuration) {
         std::cout << "Timeout reached" << std::endl;
     }
 }
+*/
 
 /*
  *
@@ -97,6 +99,9 @@ public:
             size_t j = i;
             while (i <= minLen-1)
             {
+                if (!((p.length()-1-i) >=0 && ((p.length()-1-i) <= (p.length()-1)) && (s.length()-1-j) >= 0 && ((s.length()-1-j) <= (s.length()-1))))
+                    break;
+
                 if (p[p.length()-1-i] != '.' && p[p.length()-1-i] != '*')
                 {
                     if (p[p.length()-1-i] != s[s.length()-1-j])
@@ -388,7 +393,8 @@ void TEST(bool printAll = false)
     testCases.push_back({"aaa"                  ,"ab*ac*a"                   , false, true  , false, 1000.0});
     testCases.push_back({"aaca"                 ,"ab*a*c*a"                  , false, true  , false, 1000.0});
     testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0});
-    testCases.push_back({"a"                    ,".*"                        , false, true  , false, 1000.0}); //7
+    testCases.push_back({"aaa"                  ,"ab*a"                      , false, false , false, 1000.0});
+    testCases.push_back({"a"                    ,".*"                        , false, true  , false, 1000.0}); //8
     testCases.push_back({"aasdfasdfasdfasdfas"  ,"aasdf.*asdf.*asdf.*asdf.*s", false, true  , false, 1000.0});
     testCases.push_back({"abcdede"              ,"ab.*de"                    , false, true  , false, 1000.0});
     testCases.push_back({"aa"                   ,"a*"                        , false, true  , false, 1000.0});
@@ -397,11 +403,11 @@ void TEST(bool printAll = false)
     testCases.push_back({"ba"                   ,".*."                       , false, true  , false, 1000.0});
     testCases.push_back({"ab"                   ,".*"                        , false, true  , false, 1000.0});
     testCases.push_back({"ab"                   ,".*.."                      , false, true  , false, 1000.0});
-    testCases.push_back({"ab"                   ,".*..c*"                    , false, true  , false, 1000.0}); //16
+    testCases.push_back({"ab"                   ,".*..c*"                    , false, true  , false, 1000.0}); //17
     testCases.push_back({"acaabbaccbbacaabbbb"  ,"a*.*b*.*a*aa*a*"           , false, false , false, 1000.0});
     testCases.push_back({"a"                    ,"ab*"                       , false, true  , false, 1000.0});
     testCases.push_back({"aabcbcbcaccbcaabc"    ,".*a*aa*.*b*.c*.*a*"        , false, true  , false, 1000.0});
-    testCases.push_back({"abbabaaaaaaacaa"      ,"a*.*b.a.*c*b*a*c*"         , false, true  , false, 1000.0}); //20
+    testCases.push_back({"abbabaaaaaaacaa"      ,"a*.*b.a.*c*b*a*c*"         , false, true  , false, 1000.0}); //21
     testCases.push_back({"aba"                  ,".*.*"                      , false, true  , false, 1000.0});
     testCases.push_back({"acaabbaccbbacaabbbb"  ,"a*.*b*.*a*aa*a*"           , false, false , false, 1000.0});
     testCases.push_back({"a"                    ,".b"                        , false, false , false, 1000.0});
@@ -409,7 +415,7 @@ void TEST(bool printAll = false)
     testCases.push_back({"baaabaacaacaacbca"    ,"b*c*c*.*.*bba*b*"          , false, false , false, 1000.0});
     testCases.push_back({"abcd"                 ,"d*"                        , false, false , false, 1000.0});
     testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); 
-    testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0}); //28
+    testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0}); //29
 
     size_t maxSlength(0), maxPlength(0);
     for (auto testCase:testCases)
@@ -423,7 +429,7 @@ void TEST(bool printAll = false)
     size_t testCaseNumber(0);
     for (auto testCase:testCases)
     {
-        isTimeout = false;
+        bool isTimeout = false;
         //auto start = std::chrono::steady_clock::now();
         //std::thread timeoutThread(timeoutChecker, 2);
 
@@ -452,9 +458,13 @@ void TEST(bool printAll = false)
 
         size_t sSpacing = maxSlength - testCase.inputString.size();
         size_t pSpacing = maxPlength - testCase.patternString.size();
+        size_t dSpacing(1);
+        if (testCaseNumber > 9)
+            dSpacing = 0;
+
         if (!testCase.result || isTimeout)
         {
-            cout << "Test case " << testCaseNumber << "/" << testCases.size() << " : " 
+            cout << "Test case " << testCaseNumber << "/" << testCases.size() << string(dSpacing,' ') << " : "  
                  << " s = " << testCase.inputString << string(sSpacing,' ') << ", p = " << testCase.patternString << string(pSpacing,' ');
             if (!testCase.result){ 
                 cout << ", Output = " << testCase.output << ", Expected = " << testCase.expected << "; FAILURE !!!" << endl;
@@ -467,7 +477,7 @@ void TEST(bool printAll = false)
         {           
             if (printAll)
             {
-                cout << "Test case " << testCaseNumber << "/" << testCases.size() << " : " 
+                cout << "Test case " << testCaseNumber << "/" << testCases.size() << string(dSpacing,' ') << " : "
                  << " s = " << testCase.inputString << string(sSpacing,' ') << ", p = " << testCase.patternString << string(pSpacing,' ')
                  << ", Output = " << testCase.output << ", Expected = " << testCase.expected << "; PASS" << endl;
             }
@@ -483,12 +493,14 @@ int main()
 {
     // TEST Log
     /*
+        s = "aaa" p = "ab*a" | Line 1061: Char 9: runtime error: addition of unsigned offset to 0x7fff92e7b7c0 overflowed to 0x7fff92e7b7bf (basic_string.h)
+                               SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/bits/basic_string.h:1070:9
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "abbaaaabaabbcba";
-    string p = "a*.*ba.*c*..a*.a*.";
+    string s = "aaa";
+    string p = "ab*a";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
