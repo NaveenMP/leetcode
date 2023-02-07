@@ -242,6 +242,21 @@ public:
             }
             else if (p[p_idx] == '*')
             {
+                char preChar = p[p_idx-1];
+                size_t count = std::count(s.begin(), s.end(), preChar);
+
+                for (size_t reps=0; reps <=count; ++reps)
+                {
+                    string p_tmp = p;
+                    p_tmp.erase(p_idx-1,2);
+                    if (reps > 0)
+                        p_tmp.insert(p_idx-1, reps, preChar);
+                    
+                    if (isMatch(s, p_tmp))
+                        return true;
+
+                }
+                /*
                 if (p_idx >= s_len)
                 {
                     if (p_idx - p.length() >= 1)
@@ -294,6 +309,7 @@ public:
                     }
 
                 }
+                */
             }
             else
             {
