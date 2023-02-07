@@ -255,6 +255,9 @@ public:
                     if (isMatch(s, p_tmp))
                         return true;
 
+                    if (reps == count)
+                        return false;       
+
                 }
                 /*
                 if (p_idx >= s_len)
@@ -438,6 +441,7 @@ void TEST(bool printAll = false)
     testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); 
     testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0}); //29
     testCases.push_back({"bbcacbabbcbaaccabc"   ,"b*a*a*.c*bb*b*.*.*"        , false, true  , false, 1000.0}); //30
+    testCases.push_back({"bbab"                 ,"b*a*"                      , false, false , false, 1000.0}); //30
 
     size_t maxSlength(0), maxPlength(0);
     for (auto testCase:testCases)
@@ -515,17 +519,13 @@ int main()
 {
     // TEST Log
     /*
-        s = "bbcacbabbcbaaccabc" p = "b*a*a*.c*bb*b*.*.*", Output false, Expected true | 242 / 353 testcases passed
-                                      .c*bb*b*.*.*
-                                      bbb*b*.*.*
-                                      bb.*.*
-                                      bbcacbabbcbaaccabc
+        s = "bbab" p = "b*a*", Time Limit Exceeded | Test case 58/353
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "bbcacbabbcbaaccab";
-    string p = "b*a*a*.c*bb*b*.*.*";
+    string s = "bbab";
+    string p = "b*a*";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
