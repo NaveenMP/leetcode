@@ -118,9 +118,10 @@ public:
                 }
                 else if (p[p.length()-1-i] == '*')
                 {
-                    char pprev = p[p.length()-1-(i+1)];
-                    char scurr = s[s.length()-1-j];
-                    if ((p.length()-1-(i+1)) >= 0)
+                
+                    //char pprev = p[p.length()-1-(i+1)];
+                    //char scurr = s[s.length()-1-j];
+                    if ((p.length()-1-(i+1)) >= 0 && (p.length()-1-(i+1)) <= (p.length()-1))
                     {
                         if (p[p.length()-1-(i+1)] == '.')
                         {
@@ -137,35 +138,39 @@ public:
                         }
                         else
                         {
-                            /* 
-                            p.erase(p.length()-1-(i+1),2);
-                            if (p[p.length()-1-(i+1)] == s[s.length()-1-j])
-                            {
-                                size_t charRecurrance = countCharReccurance(s, s[s.length()-1-i], s.length()-1-i, true);
-                                if (charRecurrance > 0)
-                                    p.insert(p.length()-1-(i+1),charRecurrance,s[s.length()-1-i]);
-                                ++i;
-                            }
-                            */
                             if (p[p.length()-1-(i+1)] == s[s.length()-1-j])
                             {
                                 size_t charRecurrance = countCharReccurance(s, s[s.length()-1-j], s.length()-1-j, true);
+
                                 if (charRecurrance > 0)
+                                {
+                                    if ((p.length()-1-(i+2)) >= 0 && (p.length()-1-(i+2)) <= (p.length()-1))
+                                    {
+                                       if (p[p.length()-1-(i+2)] == p[p.length()-1-(i+1)] && charRecurrance==1)
+                                       {
+                                         i+=2;
+                                         continue;
+                                       }
+                                    }
+
                                     j += charRecurrance;
+                                }
                                 i+=2;
                             }
                             else
                             {
-                               p.erase(p.length()-1-(i+1),2); 
+                                p.erase(p.length()-1-(i+1),2); 
                             }
 
                         }
                     }
+                
                 }
             }
 
             finishedPreprocessing = true;
         }
+        
 
         // Now process from start of pattern string p
         while(p_idx < p.length())
@@ -252,67 +257,14 @@ public:
                     if (reps > 0)
                         p_tmp.insert(p_idx-1, reps, preChar);
                     
-                    if (isMatch(s, p_tmp))
+                    if (isMatch(s, p_tmp)){
                         return true;
-
-                    if (reps == count)
-                        return false;       
-
+                    }
+                    else{
+                        if (reps == count)
+                            return false;       
+                    }
                 }
-                /*
-                if (p_idx >= s_len)
-                {
-                    if (p_idx - p.length() >= 1)
-                        p.erase(p_idx, 2);
-                    else
-                        p.erase(p_idx, 1);
-
-                    continue; 
-                }
-                else
-                {
-                    size_t p_char_reps(0), s_char_reps(0), diff_reps(0);
-                    for (size_t i = p_idx-1; i < p.length(); ++i)
-                    {
-                        if (p[i] == p[p_idx-1] && i!= p_idx)
-                           ++p_char_reps;
-                        else if (p[i] != p[p_idx-1] && i!= p_idx)
-                           break; 
-                    }
-                    for (size_t i = p_idx-1; i < s.length(); ++i)
-                    {
-                        if (s[i] == p[p_idx-1])
-                           ++s_char_reps;
-                        else if (s[i] != p[p_idx-1])
-                           break; 
-                    }
-
-                    size_t p_char_occur(0);
-                    for (size_t i = p_idx-1; i < p.length(); ++i)
-                    {
-                        if (p[i] == p[p_idx-1]){
-                            ++p_char_occur;
-                        }
-                        else{
-                            if ((p[i] != '*') && (p[i] != '.') && (p[i+1] != '*') && (p[i+1] != '.')) // search region for potential character repetitions ends when this condition is met
-                                break;
-                        }
-                    }
-
-                    if (p_char_reps > s_char_reps)
-                    {
-                        p.erase(p_idx-1,2);
-                    }
-                    else
-                    {
-                        diff_reps = s_char_reps - p_char_reps;
-                        p.erase(p_idx,1);
-                        if (diff_reps > 0 && (s_char_reps > p_char_occur))
-                            p.insert(p_idx, diff_reps, p[p_idx-1]);
-                    }
-
-                }
-                */
             }
             else
             {
@@ -421,7 +373,7 @@ void TEST(bool printAll = false)
     testCases.push_back({"a"                    ,".*"                        , false, true  , false, 1000.0}); //8
     testCases.push_back({"aasdfasdfasdfasdfas"  ,"aasdf.*asdf.*asdf.*asdf.*s", false, true  , false, 1000.0});
     testCases.push_back({"abcdede"              ,"ab.*de"                    , false, true  , false, 1000.0});
-    testCases.push_back({"aa"                   ,"a*"                        , false, true  , false, 1000.0});
+    testCases.push_back({"aa"                   ,"a*"                        , false, true  , false, 1000.0}); //11
     testCases.push_back({"ab"                   ,".*"                        , false, true  , false, 1000.0});
     testCases.push_back({"abbbcd"               ,"ab*bbbcd"                  , false, true  , false, 1000.0});
     testCases.push_back({"ba"                   ,".*."                       , false, true  , false, 1000.0});
@@ -441,7 +393,9 @@ void TEST(bool printAll = false)
     testCases.push_back({"aaa"                  ,"ab*a*c*a"                  , false, true  , false, 1000.0}); 
     testCases.push_back({"abbaaaabaabbcba"      ,"a*.*ba.*c*..a*.a*."        , false, true  , false, 1000.0}); //29
     testCases.push_back({"bbcacbabbcbaaccabc"   ,"b*a*a*.c*bb*b*.*.*"        , false, true  , false, 1000.0}); //30
-    testCases.push_back({"bbab"                 ,"b*a*"                      , false, false , false, 1000.0}); //30
+    testCases.push_back({"bbab"                 ,"b*a*"                      , false, false , false, 1000.0}); //31
+    testCases.push_back({"aabccbcbacabaab"      ,".*c*a*b.*a*ba*bb*"         , false, true  , false, 1000.0}); //32
+    testCases.push_back({"cbacbbabbcaabbb"      ,"b*c*.*a*..a.*c*.*"         , false, true  , false, 1000.0}); //33
 
     size_t maxSlength(0), maxPlength(0);
     for (auto testCase:testCases)
@@ -519,13 +473,15 @@ int main()
 {
     // TEST Log
     /*
-        s = "bbab" p = "b*a*", Time Limit Exceeded | Test case 58/353
+        s = "aabccbcbacabaab" p = ".*c*a*b.*a*ba*bb*"; Output false Expected true | 243 / 353 testcases passed
+        s = "cbacbbabbcaabbb" p = "b*c*.*a*..a.*c*.*"; Output false Expected true | 246 / 353 testcases passed
+
     */
 
     Solution S;
     clock_t start = clock();
-    string s = "bbab";
-    string p = "b*a*";
+    string s = "cbacbbabbcaabbb";
+    string p = "b*c*.*a*..a.*c*.*";
     //string pattern = p;
     bool ret = S.isMatch(s, p);
     double elapsedSecs = (clock() - start) / ((double)CLOCKS_PER_SEC);
