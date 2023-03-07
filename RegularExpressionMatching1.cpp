@@ -65,7 +65,82 @@ public:
                 break;
         }
 
-        
+        vector<size_t> pDotIndices      = findPatternIndices(p, string("."));
+        vector<size_t> pStartIndices    = findPatternIndices(p, string("*"));
+        vector<size_t> pDotStartIndices = findPatternIndices(p, ".*");
+
+        while(pDotIndices.size() > 0)
+        {
+           for (auto pDotIdx: pDotIndices)
+           {
+             
+           }              
+        }
+
+        while(pStartIndices.size() > 0)
+        {
+           for (auto pStarIdx: pStartIndices)
+           {
+            
+           } 
+        }
+
+        /*
+        while(pDotStartIndices.size() > 0)
+        {
+           for (auto pDotStarIdx: pDotStartIndices)
+           {
+            
+           } 
+        }
+        */
+
+        size_t s_idx(0), p_idx(0);
+        size_t s_len(s.length()), p_len(p.length());
+        while(p_idx < p.length())
+        {
+            if ((s[s_idx] == p[p_idx]) && (s_idx==p_idx) && (p_idx <= s_idx))
+            {
+                ++s_idx;
+                ++p_idx;
+            }
+            else if (p[p_idx] == '.' && p[p_idx+1] == '*')
+            {
+                if (p_idx+2 < p.length())
+                {
+                    for (size_t i = p_idx; i < s_len; ++i)
+                    {                        
+                        if (s[i] == p[p_idx+2])
+                        {
+                            //cout << "Match to match upto "<< s[i] << " at " << i  << endl;
+                            auto p_tmp = p;
+                            p_tmp.erase(p_idx, 2);
+                            p_tmp.insert(p_idx, s.substr(p_idx,i-p_idx));
+                            size_t sSubStrStart = p_idx + (i-p_idx);
+                            size_t pSubStrStart = sSubStrStart;
+                            size_t sSubStrLen   = s.length() - sSubStrStart;
+                            size_t pSubStrLen   = p_tmp.length() - pSubStrStart;
+                            string s_tmp_substr = s.substr(sSubStrStart, sSubStrLen);
+                            string p_tmp_substr = p_tmp.substr(pSubStrStart, pSubStrLen);
+                            if (isMatch(s_tmp_substr, p_tmp_substr))
+                            {
+                                return true;
+                            }
+                            else if(s.find_last_of(s[i]) == i)
+                            {
+                                return false;
+                            }
+                        }
+                    }                    
+                }
+                else
+                {
+                    p.erase(p_idx, 2);
+                    if (p_idx < s.length())
+                        p.insert(p_idx, s.substr(p_idx, s.length() - p_idx));
+                }
+            }
+        }
 
         modifiedPattern = p;
 
@@ -73,24 +148,6 @@ public:
             return true;
         else
             return false;
-    }
-
-    bool patternBackMatch(const string &inputString, const string &patternString)
-    {
-        const size_t p_length = patternString.length();
-        const size_t s_length = inputString.length();
-        if (!(patternString.back() == inputString.back()))
-        {
-            if (p_length >= 2)
-            {
-                if ((patternString[p_length-2]==inputString.back() && patternString.back()=='*') || (patternString[p_length-2]=='.' && patternString.back()=='*'))
-                    return true;
-                else
-                    return false;
-            }
-        }
-
-        return true; 
     }
 
     size_t countCharReccurance(const string Str, const char Ch, const size_t start_idx, bool revDirection = false)
@@ -131,7 +188,7 @@ public:
 
     }
 
-    vector<size_t> findPatternIndices(const string &patternString, const string pattern = string("."))
+    const vector<size_t> findPatternIndices(const string &patternString, const string pattern = string("."))
     {
         vector<size_t> patternIndices;
         if (pattern != string(".") && pattern != ".*" && pattern != "*")
@@ -159,6 +216,76 @@ public:
         return patternIndices;
     }
 
+    const vector<vector<string>> findPatternReplacementOptions(const string inputString, const string &patternString, const string pattern, vector<size_t>& patternIndices)
+    {
+        vector<vector<string>> pDotOptions(patternIndices.size());
+
+        if (pattern == string("."))
+        {
+            std::reverse(patternIndices.begin(), patternIndices.end());
+            int i = patternIndices.size()-1;
+            for (auto pidx: patternIndices)
+            {
+                if (pidx+1 < patternString.size())
+                {
+                    if (patternString[pidx+1] != '.')   // repetition of '.' in subsequent char
+                    {
+                        vector<size_t> charAfterDotIndicesInS = findCharIndices(inputString, patternString[pidx+1]);
+                        for (auto chIdx:charAfterDotIndicesInS)
+                            if (chIdx - 1 > 0)   // The previous character in s is a potential fill-in for dot in p
+                                pDotOptions[i].push_back(inputString[chIdx - 1]); 
+                    }
+                    else
+                    {                            //subsequent dot char
+                        for (auto chIdx: pDotOptions[i+1])
+                            if (chIdx - 1 > 0)
+                                pDotOptions[i].push_back(inputString[chIdx - 1]);
+                    }
+                }
+                else // dot in last element (already covered in previous pre-process step)
+                {
+                    pDotOptions[i].push_back(inputString.back());
+                }
+                //set<char> pDotOptions_i = set<char>(pDotOptions[i].begin(), pDotOptions[i].end());
+                //pDotOptions[i] = vector<char>(pDotOptions_i.begin(), pDotOptions_i.end());
+                --i;
+             }
+
+             std::reverse(patternIndices.begin(), patternIndices.end());
+        }
+
+        if (pattern == string("*"))
+        {
+            int i = 0;
+            for (auto pidx: patternIndices)
+            {
+                if (pidx-1 >= 0)
+                {
+                    size_t maxConsecCnt = findMaxConsecutiveCharReps(inputString, inputString[pidx-1]);
+                    for (size_t reps=0; reps<= maxConsecCnt; ++reps)
+                        pDotOptions[i].push_back(string(reps, inputString[pidx-1])); 
+                    ++i;
+                }
+            }
+        }
+
+        if (pattern == string(".*"))
+        {
+            /*
+            int i = 0;
+            if (patternIndices.size() > 0)
+            {
+                for (auto pidx: patternIndices)
+                {
+                    if (i==0)
+                        inputString.find()
+                }
+            }
+            */
+            
+        }
+    }
+
     vector<size_t> findCharIndices(const string inputString, const char ch)
     {
         vector<size_t> indices;
@@ -174,6 +301,32 @@ public:
         }
 
         return indices;
+    }
+
+    size_t findMaxConsecutiveCharReps(const string inputString, const char ch)
+    {
+        size_t count = 1;
+        if (!inputString.find(ch))
+        {
+            count = 0;
+            return count;
+        }
+
+        size_t segment_count = 1;
+        for (size_t i = inputString.find_first_of(ch,0); i <= inputString.find_last_of(ch); ++i)
+        {
+            if (inputString[i] == inputString[i+1])
+                ++segment_count;
+            else 
+                if (segment_count > count){
+                    count = segment_count;
+                    segment_count = 1;
+                }
+                
+            
+        }
+
+        return count;
     }
 
     bool finishedPreprocessing = false;
